@@ -14,7 +14,7 @@ const SigninForm: React.FC<Props> = ({ }) => {
     const {login } = useAuth()
 
     return (
-        <div className='w-[80%]'>
+        <div className='w-[95%] lg:w-[80%]'>
             <form className='flex flex-col gap-4 p-1'>
                 <div className='flex flex-col gap-4 items-baseline'>
                     <p className='text-xl font-bold'>Email : </p>

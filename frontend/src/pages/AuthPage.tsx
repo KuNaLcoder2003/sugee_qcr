@@ -6,7 +6,7 @@ const AuthPage = () => {
     return (
         <div className='h-screen w-screen overflow-x-hidden p-4 bg-gray-100'>
             <div className='h-[100%] w-[100%] p-2 flex items-center justify-center'>
-                <div className='block lg:grid lg:grid-cols-2 lg:grid-rows-1 w-[60%] h-auto p-4 rounded-lg-left '>
+                <div className='block lg:grid lg:grid-cols-2 lg:grid-rows-1 w-[90%] lg:w-[60%] h-auto p-4 rounded-lg-left '>
                     <div  className='hidden bg-green-700 text-white lg:flex lg:items-center lg:justify-center lg:flex-col gap-4 p-8 rounded-bl-lg rounded-tl-lg'>
                         <div className='w-[100px] h-[100px] rounded-full border-2 border-white flex items-center justify-center'>
                             <CheckIcon color='white' size={32} />
