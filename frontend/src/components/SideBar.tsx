@@ -45,7 +45,13 @@ const SideBar: React.FC<Prop> = ({ sideBarOpen, setSidebarOpen }) => {
         {sidebarItems.map((item, index) => (
           <p
             key={index}
-            onClick={() => setActive(index)}
+            onClick={() => {
+              if(index == 2) {
+                logout()
+              } else {
+                setActive(index)
+              }
+            }}
             className={`flex items-center px-6 py-3 text-sm font-medium cursor-pointer transition-colors duration-200 ${active === index
                 ? 'bg-green-700 text-white rounded-lg'
                 : 'text-gray-700 hover:bg-gray-100'

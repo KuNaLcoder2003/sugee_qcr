@@ -1,4 +1,4 @@
-import React, { type ChangeEvent } from 'react'
+import React from 'react'
 
 interface InputProps {
     onChange? : ()=> void
@@ -10,7 +10,7 @@ interface InputProps {
 
 const FormInput : React.FC<InputProps> = ({onChange , placeholder , value , type , styles}) => {
   return (
-    <input type={type} placeholder={placeholder} onChange={(e)=>onChange} value={value} className={`${styles}`} />
+    <input type={type} placeholder={placeholder} value={value} className={`${styles}`} />
   )
 }
 

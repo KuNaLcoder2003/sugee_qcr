@@ -115,7 +115,6 @@ const Entries = () => {
             const data = await res.json();
             if (data.data) {
                 setEntries(data.data);
-                console.log('Yeh le bhai tera data' , data.data)
                 setBranchCode(bankCode);
                 sessionStorage.setItem('branch', bankCode);
             } else {

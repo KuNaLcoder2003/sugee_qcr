@@ -32,7 +32,6 @@ export const AuthProvider = ({ children }: Props) => {
     const[loading , setLoading] = useState<boolean>(false)
     const navigate = useNavigate()
     useEffect(() => {
-        console.log(loggedIn)
         const token = localStorage.getItem('token') || "hi"
         if(token) {
             setIsLoggedIn(true)
@@ -43,8 +42,7 @@ export const AuthProvider = ({ children }: Props) => {
 
     const login = (cred:UserCred) => {
         try {
-            
-            console.log(cred)
+            // login api
             navigate('/dashboard')
 
         } catch (error) {

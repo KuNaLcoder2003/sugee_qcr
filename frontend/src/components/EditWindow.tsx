@@ -50,7 +50,6 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url, setIsM
 
   })
   useEffect(() => {
-    console.log(selie_url)
     setImages([{
       name: 'Aadhaar Card - 1',
       src: aadhar_page1_url
@@ -88,7 +87,9 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url, setIsM
         body: formData
       }).then(async (res: Response) => {
         const data = await res.json()
-        console.log(data)
+        if(data.status == '1') {
+          toast.success(data.message)
+        }
       })
     } catch (error) {
       toast.error(`${error}`)
@@ -98,7 +99,6 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url, setIsM
   const handleSubmit = (e: FormEvent) => {
 
     e.preventDefault()
-    console.log('Submit maar rha hu bhai')
     const formData = new FormData()
     formData.append('bank_code', bank_code)
     formData.append("customer_guid", customer_guid)
@@ -204,9 +204,6 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url, setIsM
                     placeholder={field.placeholder}
                     value={field.value}
                     onChange={(e) => {
-                      console.log(e.target.value)
-                      console.log(index)
-                      
                       if (index == 0) {
                         setEditedValues({
                           ...editedValues,
