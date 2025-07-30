@@ -1,0 +1,63 @@
+import React, { useState } from 'react'
+import { LogOut, Settings, User, X } from "lucide-react"
+import { useAuth } from '../context/authContext'
+
+interface Prop {
+  sideBarOpen: boolean,
+  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const sidebarItems = [
+  {
+    icon: <User />,
+    label: 'Dashboard',
+  },
+  {
+    icon: <Settings />,
+    label: 'Settings'
+  },
+  {
+    icon: <LogOut />,
+    label: 'Logout'
+  }
+]
+const SideBar: React.FC<Prop> = ({ sideBarOpen, setSidebarOpen }) => {
+
+  const [active, setActive] = useState<number>(0)
+  const {logout} = useAuth()
+  return (
+    <div
+      className={`fixed lg:static inset-y-0 left-0 z-50 h-screen w-64 p-4 bg-white shadow-lg transform transition-transform duration-300 ease-in-out 
+      ${sideBarOpen ? 'translate-x-0' : '-translate-x-full'} 
+      lg:translate-x-0 lg:inset-0`}
+    >
+      <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+        <h1 className="text-xl font-bold text-gray-800">QC Dashboard</h1>
+        <button
+          onClick={() => setSidebarOpen(false)}
+          className="lg:hidden p-2 rounded-md hover:bg-gray-100"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      <nav className="mt-6">
+        {sidebarItems.map((item, index) => (
+          <p
+            key={index}
+            onClick={() => setActive(index)}
+            className={`flex items-center px-6 py-3 text-sm font-medium cursor-pointer transition-colors duration-200 ${active === index
+                ? 'bg-green-700 text-white rounded-lg'
+                : 'text-gray-700 hover:bg-gray-100'
+              }`}
+          >
+            <div className="w-5 h-5 mr-3">{item.icon}</div>
+            {item.label}
+          </p>
+        ))}
+      </nav>
+    </div>
+  )
+}
+
+export default SideBar
