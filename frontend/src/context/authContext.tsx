@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthContextType>({
     user_name: '',
     loggedIn : false,
     loading : false,
-    login : function(cred : UserCred):void {},
+    login : function(cred : UserCred):void {console.log(cred.email)},
     logout : function():void {}
 })
 
@@ -43,7 +43,10 @@ export const AuthProvider = ({ children }: Props) => {
     const login = (cred:UserCred) => {
         try {
             // login api
+            console.log(cred.email)
             navigate('/dashboard')
+            setUserName("")
+            setLoading(false)
 
         } catch (error) {
             

@@ -40,7 +40,7 @@ interface Props {
 }
 
 const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url, setIsModalOpen,
-  bank_code, branch_code, aadhar_page1_url, aadhar_page2_url, selie_url, sign_url, account_number, cif_number, created_on, status, setEntryToEdit }) => {
+  bank_code, aadhar_page1_url, aadhar_page2_url, selie_url, sign_url, account_number, cif_number, created_on, setEntryToEdit }) => {
 
   const [images, setImages] = useState<any[]>([])
   const [enlargedImage, setEnlargedImage] = useState<number>(-1)
@@ -113,6 +113,9 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url, setIsM
         body: formData
       }).then(async (res: Response) => {
         const data = await res.json()
+        if(data.status == '1') {
+          // DO something
+        }
       })
     } catch (error) {
       toast.error(`${error}`)

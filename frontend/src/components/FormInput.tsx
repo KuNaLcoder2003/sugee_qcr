@@ -8,7 +8,7 @@ interface InputProps {
     type : "text" | "password" | "number"
 }
 
-const FormInput : React.FC<InputProps> = ({onChange , placeholder , value , type , styles}) => {
+const FormInput : React.FC<InputProps> = ({ placeholder , value , type , styles}) => {
   return (
     <input type={type} placeholder={placeholder} value={value} className={`${styles}`} />
   )
