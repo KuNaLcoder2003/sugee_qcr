@@ -1,42 +1,7 @@
 import React from 'react'
+import type {Entry} from '../types'
 
-interface Entry {
-    gid: string,
-    pan_page1_url: string,
-    bank_code: string,
-    aadhar_page1_url: string,
-    aadhar_page2_url: string,
-    selie_url: string,
-    customer_guid: string,
-    account_number: string,
-    branch_code: string,
-    cif_number: string,
-    sign_url: string,
-    aadhar_json?: string,
-    created_on: string,
-    status: string,
-    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    setEntryToEdit: React.Dispatch<React.SetStateAction<EntryEdit>>
-}
-
-interface EntryEdit {
-    gid: string,
-    pan_page1_url: string,
-    bank_code: string,
-    aadhar_page1_url: string,
-    aadhar_page2_url: string,
-    selie_url: string,
-    customer_guid: string,
-    account_number: string,
-    branch_code?: string,
-    cif_number: string,
-    sign_url: string,
-    aadhar_json?: string,
-    created_on: string,
-    status: string,
-}
-
-const Entry: React.FC<Entry> = ({ gid, pan_page1_url, aadhar_page1_url, aadhar_page2_url,
+const EntryComp: React.FC<Entry> = ({ gid, pan_page1_url, aadhar_page1_url, aadhar_page2_url,
     selie_url, cif_number, account_number, customer_guid, branch_code, sign_url, created_on, status, bank_code, setIsModalOpen, setEntryToEdit }) => {
     return (
         <div className='w-full mb-4 bg-white rounded-lg'>
@@ -60,16 +25,23 @@ const Entry: React.FC<Entry> = ({ gid, pan_page1_url, aadhar_page1_url, aadhar_p
                         sign_url,
                         created_on,
                         status,
+                        user_json: {
+                            aadhar_no: '',
+                            pan_no: '',
+                            father_name: '',
+                            name: '',
+                            gender: '',
+                            dob: '',
+                            address: ''
+                        }
                     })
                 }} className='text-center p-1 bg-green-600 text-white rounded-full cursor-pointer'>View</button>
-                
+
             </div>
 
-            {/* <div className='w-[90%] m-auto flex items-center justify-end gap-6 mb-2'>
-
-            </div> */}
+            
         </div>
     )
 }
 
-export default Entry
+export default EntryComp

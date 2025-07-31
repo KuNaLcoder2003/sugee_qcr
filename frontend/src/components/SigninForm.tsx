@@ -17,13 +17,13 @@ const SigninForm: React.FC<Props> = ({ }) => {
         <div className='w-[95%] lg:w-[80%]'>
             <form className='flex flex-col gap-4 p-1'>
                 <div className='flex flex-col gap-4 items-baseline'>
-                    <p className='text-xl font-bold'>Email : </p>
+                    <p className='text-xl font-bold'>Phone : </p>
                     <input onChange={(e)=> {
                         setVal({
                             ...val ,
                             phone_no : e.target.value
                         })
-                    }} value={val.phone_no} placeholder='Enter your email...' type="text" className='w-[100%] p-2 border-2 border-gray-300 rounded-lg' />
+                    }} value={val.phone_no} placeholder='Enter your phone number...' type="text" className='w-[100%] p-2 border-2 border-gray-300 rounded-lg' />
                 </div>
                 <div className='flex flex-col gap-4 items-baseline'>
                     <p className='text-xl font-bold'>Password : </p>

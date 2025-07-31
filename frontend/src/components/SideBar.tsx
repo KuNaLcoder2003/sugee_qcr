@@ -1,29 +1,40 @@
 import React, { useState } from 'react'
-import { LogOut, Settings, User, X } from "lucide-react"
+import { LogOut, Settings, User, X , ClipboardClock  } from "lucide-react"
 import { useAuth } from '../context/authContext'
+
+type tabs = "Entries" | "Pending" | "Cleared"
 
 interface Prop {
   sideBarOpen: boolean,
-  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  setCurrentTab : React.Dispatch<React.SetStateAction<tabs>>
 }
 
 const sidebarItems = [
   {
     icon: <User />,
     label: 'Dashboard',
+    name : 'Entries' as tabs,
+  },
+  {
+    icon: <ClipboardClock />,
+    label: 'Pending',
+    name : 'Pending' as tabs,
   },
   {
     icon: <Settings />,
-    label: 'Settings'
+    label: 'Cleared',
+    name : 'Cleared' as tabs
   },
   {
     icon: <LogOut />,
-    label: 'Logout'
-  }
+    label: 'Logout',
+    name : '' as tabs
+  },
 ]
-const SideBar: React.FC<Prop> = ({ sideBarOpen, setSidebarOpen }) => {
+const SideBar: React.FC<Prop> = ({ sideBarOpen, setSidebarOpen , setCurrentTab }) => {
 
-  const [active, setActive] = useState<number>(0)
+  const [active, setActive] = useState<number>(Number(sessionStorage.getItem('tabIndex')) || 0)
   const {logout} = useAuth()
   return (
     <div
@@ -46,13 +57,16 @@ const SideBar: React.FC<Prop> = ({ sideBarOpen, setSidebarOpen }) => {
           <p
             key={index}
             onClick={() => {
-              if(index == 2) {
+              if(index == 3) {
                 logout()
               } else {
                 setActive(index)
+                setCurrentTab(item.name)
+                sessionStorage.setItem('tab' , item.name)
+                sessionStorage.setItem('tabIndex' , `${index}`)
               }
             }}
-            className={`flex items-center px-6 py-3 text-sm font-medium cursor-pointer transition-colors duration-200 ${active === index
+            className={`flex items-center px-6 py-3 rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200 ${active === index
                 ? 'bg-green-700 text-white rounded-lg'
                 : 'text-gray-700 hover:bg-gray-100'
               }`}

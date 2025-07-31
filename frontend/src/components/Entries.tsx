@@ -1,57 +1,13 @@
 
 import { useEffect, useState } from 'react';
-import Entry from './Entry';
 import toast from 'react-hot-toast';
-import EditWindow from './EditWindow';
 import Loader from './Loader';
-
+import type {KYCEntries , Edit , Branch} from '../types'
+import Window from './Window';
 const FETCH_BANKS_URL = `${import.meta.env.VITE_FETCH_BANKS_URL}`
 const FETCH_OCR_KYC_ENTRIES_URL = `${import.meta.env.VITE_FETCH_Entries_URL}`
-interface KYCEntries {
-    gid: string;
-    pan_page1_url: string;
-    bank_code: string;
-    aadhar_page1_url: string;
-    aadhar_page2_url: string;
-    selie_url: string;
-    customer_guid: string;
-    account_number: string;
-    branch_code: string;
-    cif_number: string;
-    sign_url: string;
-    aadhar_page1_path: string;
-    aadhar_page2_path: string;
-    aadhar_json: string;
-    created_on: string;
-    pan_page1_path: string;
-    selfie_path: string;
-    sign_path: string;
-    status: string;
-}
-interface Edit {
-    gid: string,
-    pan_page1_url: string,
-    bank_code: string,
-    aadhar_page1_url: string,
-    aadhar_page2_url: string,
-    selie_url: string,
-    customer_guid: string,
-    account_number: string,
-    branch_code?: string,
-    cif_number: string,
-    sign_url: string,
-    aadhar_json?: string,
-    created_on: string,
-    status: string,
-}
-interface Branch {
-    bank_code: string;
-    bank_name: string;
-    active: string;
-}
-
 const Entries = () => {
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+    // const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const [entries, setEntries] = useState<KYCEntries[]>([]);
     const [branchCode, setBranchCode] = useState<string>(sessionStorage.getItem('branch') || '');
     const [branches, setBranches] = useState<Branch[]>([]);
@@ -72,6 +28,15 @@ const Entries = () => {
         aadhar_json: "",
         created_on: "",
         status: "",
+        user_json : {
+            aadhar_no : '',
+            pan_no : '',
+            father_name : '',
+            name : '',
+            gender : '',
+            dob : '',
+            address : ''
+        }
     })
 
     useEffect(() => {
@@ -82,7 +47,7 @@ const Entries = () => {
         } else {
             fetchEntries(storedBranch);
         }
-    }, []);
+    }, [entries.length === 0]);
 
     const loadBranches = async () => {
         setLoadingBanks(true);
@@ -106,17 +71,49 @@ const Entries = () => {
             setLoading(true)
             const formData = new FormData();
             formData.append("bank_code", bankCode);
-            formData.append("status", "0");
-            formData.append("limit", "10");
+            formData.append("status", "0"); // fetch entry with status : 0 i.e unassigned one
+            formData.append("limit", "1"); // fetch one at a time
+            formData.append("fromDate" , "7/29/2025 4:23:42 PM")
 
             const res = await fetch(FETCH_OCR_KYC_ENTRIES_URL, {
                 method: 'POST',
                 body: formData
             });
             const data = await res.json();
-            if (data.data) {
+            if (data.status == '1') {
+
                 setEntries(data.data);
+                const new_form = new FormData()
+                new_form.append("status" , "-1") //   -3 -> cleared , -2 -> pending , -1 -> assigned , 0 -> not assigned , 1 -> Done
+                new_form.append("bank_code" , bankCode)
+                new_form.append("customer_guid" , data.data[0].customer_guid)
+                new_form.append("gid" , data.data[0].gid)
+                const response = await fetch('https://sugee.io/KYCServiceAPI/kycapi/updateOCRData' , {
+                    method : 'POST',
+                    body : new_form
+                })
+                const status_data = await response.json()
+                if(status_data.status !== 1) {
+                    toast.error(status_data.message)
+                    return 
+                }
                 setBranchCode(bankCode);
+                setEntryToEdit({
+                    aadhar_page1_url : data.data[0].aadhar_page1_url , 
+                    aadhar_page2_url : data.data[0].aadhar_page2_url , 
+                    pan_page1_url : data.data[0].pan_page1_url,
+                    user_json : JSON.parse(data.data[0].user_json),
+                    status : "-1",
+                    aadhar_json : "",
+                    gid : data.data[0].gid,
+                    customer_guid : data.data[0].customer_guid,
+                    account_number : "",
+                    bank_code : data.data[0].bank_code,
+                    selie_url : data.data[0].selie_url,
+                    sign_url : data.data[0].sign_url,
+                    cif_number : data.data[0].cif_number,
+                    created_on : data.data[0].created_on
+                })
                 sessionStorage.setItem('branch', bankCode);
             } else {
                 toast.error(data.message || 'No data found');
@@ -177,23 +174,8 @@ const Entries = () => {
                         <div>No record to show</div>
                     ) : (
                         <div className="w-[95%] m-auto rounded-lg p-4">
-                            {
-                                isModalOpen ? <div className='fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50'>
-                                    <EditWindow setIsModalOpen={setIsModalOpen} setEntryToEdit={setEntryToEdit} branch_code='' aadhar_json='' {...entryToEdit} />
-                                </div> : null
-                            }
-                            <div className="w-full p-2 flex flex-col items-center gap-2 bg-gray-100 rounded-lg">
-                                <div className="w-full text-center p-2 grid grid-cols-5 gap-4 text-lg font-bold">
-                                    <p className='truncate'>Customer Guid</p>
-                                    <p className='truncate'>Account Number</p>
-                                    <p className='truncate'>CIF Number</p>
-                                    <p className='truncate'>Branch Code</p>
-                                    <p className='truncate'>Edit</p>
-                                </div>
-                                {entries.map((obj) => (
-                                    <Entry setIsModalOpen={setIsModalOpen} setEntryToEdit={setEntryToEdit} key={obj.gid} {...obj} />
-                                ))}
-                            </div>
+                            <Window  setEntries={setEntries} branch_code='' aadhar_json='' {...entryToEdit} />
+                           
                         </div>
                     )
                 }
