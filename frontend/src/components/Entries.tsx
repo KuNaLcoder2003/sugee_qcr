@@ -6,6 +6,7 @@ import type {KYCEntries , Edit , Branch} from '../types'
 import Window from './Window';
 const FETCH_BANKS_URL = `${import.meta.env.VITE_FETCH_BANKS_URL}`
 const FETCH_OCR_KYC_ENTRIES_URL = `${import.meta.env.VITE_FETCH_Entries_URL}`
+const EDIT_OCR_DATA_URL = `${import.meta.env.VITE_UPDATE_OCR_DATA}`
 const Entries = () => {
     // const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const [entries, setEntries] = useState<KYCEntries[]>([]);
@@ -81,19 +82,20 @@ const Entries = () => {
             });
             const data = await res.json();
             if (data.status == '1') {
-
                 setEntries(data.data);
                 const new_form = new FormData()
                 new_form.append("status" , "-1") //   -3 -> cleared , -2 -> pending , -1 -> assigned , 0 -> not assigned , 1 -> Done
                 new_form.append("bank_code" , bankCode)
                 new_form.append("customer_guid" , data.data[0].customer_guid)
                 new_form.append("gid" , data.data[0].gid)
-                const response = await fetch('https://sugee.io/KYCServiceAPI/kycapi/updateOCRData' , {
+                const response = await fetch(EDIT_OCR_DATA_URL , {
                     method : 'POST',
                     body : new_form
                 })
+                console.log(data)
                 const status_data = await response.json()
-                if(status_data.status !== 1) {
+                console.log('Status wala' ,status_data)
+                if(status_data.status != 1) {
                     toast.error(status_data.message)
                     return 
                 }
