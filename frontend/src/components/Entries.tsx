@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Entry from './Entry';
 import toast from 'react-hot-toast';
 import EditWindow from './EditWindow';
+import Loader from './Loader';
 
 const FETCH_BANKS_URL = `${import.meta.env.VITE_FETCH_BANKS_URL}`
 const FETCH_OCR_KYC_ENTRIES_URL = `${import.meta.env.VITE_FETCH_Entries_URL}`
@@ -140,7 +141,7 @@ const Entries = () => {
         <>
             {!branchCode ? (
                 loadingBanks ? (
-                    <div>Loading...</div>
+                    <Loader/>
                 ) : (
                     <div className="w-[95%] m-auto rounded-lg p-4 bg-gray-100 shadow-md">
                         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
@@ -170,7 +171,7 @@ const Entries = () => {
                     </div>
 
                 )
-            ) : loading ? <div className='text-xl font-bold'>Loading...</div> : <>
+            ) : loading ? <Loader/> : <>
                 {
                     entries.length === 0 ? (
                         <div>No record to show</div>
