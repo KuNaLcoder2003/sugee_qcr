@@ -94,7 +94,6 @@ const Entries = () => {
                 })
                 console.log(data)
                 const status_data = await response.json()
-                console.log('Status wala' ,status_data)
                 if(status_data.status != 1) {
                     toast.error(status_data.message)
                     return 

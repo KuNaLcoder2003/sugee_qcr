@@ -240,18 +240,31 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                   <label className="block text-sm font-medium text-gray-700">
                     {field.label}
                   </label>
-                  <input
-                    type="text"
-                    placeholder={field.placeholder}
-                    value={field.value}
-                    onChange={(e) => {
-                      setEditedValues({
-                        ...editedValues,
-                        [field.name]: e.target.value
-                      })
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  />
+                  {
+                    index == 4 ? <textarea
+                      rows={5}
+                      placeholder={field.placeholder}
+                      value={field.value}
+                      onChange={(e) => {
+                        setEditedValues({
+                          ...editedValues,
+                          [field.name]: e.target.value
+                        })
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"/> : <input
+                      type="text"
+                      placeholder={field.placeholder}
+                      value={field.value}
+                      onChange={(e) => {
+                        setEditedValues({
+                          ...editedValues,
+                          [field.name]: e.target.value
+                        })
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    />
+                  }
+
                 </div>
               ))}
             </div>
