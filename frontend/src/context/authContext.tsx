@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: Props) => {
     const[loading , setLoading] = useState<boolean>(false)
     const navigate = useNavigate()
     useEffect(() => {
-        const token = localStorage.getItem('token') || "hi"
+        const token = localStorage.getItem('token')
         if(token) {
             setIsLoggedIn(true)
         } else {
@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }: Props) => {
             // login api
             console.log(cred.email)
             navigate('/dashboard')
+            localStorage.setItem('token' , 'Bearer ')
             setUserName("")
             setLoading(false)
 
@@ -55,6 +56,7 @@ export const AuthProvider = ({ children }: Props) => {
     const logout = ()=> {
         sessionStorage.clear()
         navigate('/')
+        localStorage.clear()
         setIsLoggedIn(false)
     }
     return (
