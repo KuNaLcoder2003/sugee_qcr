@@ -12,7 +12,7 @@ const FETCH_OCR_KYC_ENTRIES_URL = `${import.meta.env.VITE_FETCH_Entries_URL}`
 const Pending = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [entries, setEntries] = useState<KYCEntries[]>([]);
-  const [branchCode, setBranchCode] = useState<string>(sessionStorage.getItem('branch') || '');
+  const [branchCode, setBranchCode] = useState<string>(sessionStorage.getItem('bank') || '');
   const [branches, setBranches] = useState<Branch[]>([]);
   const [loadingBanks, setLoadingBanks] = useState<boolean>(false);
   const [selectedBranch, setSelectedBranch] = useState<string>('');
@@ -38,7 +38,9 @@ const Pending = () => {
       name: '',
       gender: '',
       dob: '',
-      address: ''
+      address: '',
+      account_number : '',
+      cif_number : ''
     }
   })
 
@@ -95,7 +97,7 @@ const Pending = () => {
           cif_number: data.data[0].cif_number,
           created_on: data.data[0].created_on
         })
-        sessionStorage.setItem('branch', bankCode);
+        sessionStorage.setItem('bank', bankCode);
       } else {
         toast.error(data.message || 'No data found');
       }
@@ -107,12 +109,12 @@ const Pending = () => {
   }
 
   useEffect(() => {
-    const storedBranch = sessionStorage.getItem('branch');
-    if (!storedBranch) {
+    const storedBank = sessionStorage.getItem('branch');
+    if (!storedBank) {
       loadBranches();
 
     } else {
-      fetchEntries(storedBranch);
+      fetchEntries(storedBank);
     }
   }, [entries.length === 0]);
 
@@ -172,14 +174,14 @@ const Pending = () => {
               }
               <div className="w-full p-2 flex flex-col items-center gap-2 bg-gray-100 rounded-lg">
                 <div className="w-full text-center p-2 grid grid-cols-5 gap-4 text-lg font-bold">
-                  <p className='truncate'>Customer Guid</p>
+                  <p className='truncate'>Aadhaar Number</p>
                   <p className='truncate'>Account Number</p>
                   <p className='truncate'>CIF Number</p>
                   <p className='truncate'>Branch Code</p>
                   <p className='truncate'>Edit</p>
                 </div>
                 {entries.map((obj) => (
-                  <EntryComp setIsModalOpen={setIsModalOpen} setEntryToEdit={setEntryToEdit} key={obj.gid} {...obj} />
+                  <EntryComp setIsModalOpen={setIsModalOpen}   setEntryToEdit={setEntryToEdit} key={obj.gid} {...obj} user_json={entryToEdit.user_json} />
                 ))}
               </div>
             </div>
