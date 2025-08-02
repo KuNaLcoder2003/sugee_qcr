@@ -1,17 +1,16 @@
 import React from "react";
 
 export interface User {
-  aadhar_no: string,
-  address: string,
-  dob: string,
-  father_name?: string,
-  gender: string,
-  name: string,
-  pan_no: string,
-  account_number: string,
-  cif_number: string
+  aadhar_no?: string;
+  father_name?: string;
+  pan_no?: string;
+  address?: string;
+  name?: string;
+  dob?: string;
+  gender?: string;
+  account_number?: string;
+  cif_number?: string;
 }
-
 export interface Customer {
   gid: string,
   bank_code: "162",

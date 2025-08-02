@@ -66,9 +66,12 @@ const Pending = () => {
       setLoading(true)
       const formData = new FormData();
       formData.append("bank_code", bankCode);
-      formData.append("status", "-2"); // fetch entry with status : -2 i.e pending one
+      formData.append("status", "0"); // fetch entry with status : -2 i.e pending one
       formData.append("limit", "100"); // fetch one at a time
-      formData.append("fromDate", "7/29/2025 4:23:42 PM")
+      // const [year, month, day] = dateStr.split("-");
+      // const formattedDate = `${parseInt(month)}/${parseInt(day)}/${year}`;
+      // console.log(formattedDate)
+      formData.append("fromDate", "8/2/2025");
 
       const res = await fetch(FETCH_OCR_KYC_ENTRIES_URL, {
         method: 'POST',
@@ -109,7 +112,7 @@ const Pending = () => {
   }
 
   useEffect(() => {
-    const storedBank = sessionStorage.getItem('branch');
+    const storedBank = sessionStorage.getItem('bank');
     if (!storedBank) {
       loadBranches();
 

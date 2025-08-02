@@ -136,8 +136,8 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     formData.append('bank_code', bank_code)
     formData.append("customer_guid", customer_guid)
     formData.append("gid", gid)
-    formData.append("aadhar_json", editedValues.aadhar_no)
-    formData.append("pan_json", editedValues.pan_no)
+    formData.append("aadhar_json", editedValues.aadhar_no ||'')
+    formData.append("pan_json", editedValues.pan_no|| '')
     formData.append("status", "1")
 
     try {

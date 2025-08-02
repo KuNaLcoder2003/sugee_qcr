@@ -25,7 +25,7 @@ const Entries = () => {
     const [loadingBanks, setLoadingBanks] = useState<boolean>(false);
     const [selectedBank, setSelectedBank] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false)
-    const [branchCode, setBranchCode] = useState<string>(sessionStorage.getItem('branch') as string || '')
+   // const [branchCode, setBranchCode] = useState<string>(() => sessionStorage.getItem('branch') ?? '');
     const [entryToEdit, setEntryToEdit] = useState<Edit>({
         gid: "",
         pan_page1_url: "",
@@ -130,7 +130,7 @@ const Entries = () => {
             setLoading(true)
             const formData = new FormData();
             formData.append("bank_code", bankCode);
-            formData.append("status", "-1"); // fetch entry with status : 0 i.e unassigned one
+            formData.append("status", "0"); // fetch entry with status : 0 i.e unassigned one
             formData.append("limit", "1"); // fetch one at a time
             // formData.append("branch_code", branch_code)
             const [year, month, day] = dateStr.split("-");
@@ -162,7 +162,7 @@ const Entries = () => {
                 }
                 fetchBranchCustomers(bankCode, branch_code)
                 setBankCode(bankCode);
-                setBranchCode(branch_code);
+                //setBranchCode(branch_code);
                 setEntryToEdit({
                     aadhar_page1_url: data.data[0].aadhar_page1_url,
                     aadhar_page2_url: data.data[0].aadhar_page2_url,
@@ -276,7 +276,7 @@ const Entries = () => {
                                                     <option value="">Select a Value</option>
                                                     {branches.map((branch) => (
                                                         <option key={branch.branch_code} value={branch.branch_code}>
-                                                            {branch.branch_code}
+                                                            {branch.branch_name}
                                                         </option>
                                                     ))}
                                                 </select>

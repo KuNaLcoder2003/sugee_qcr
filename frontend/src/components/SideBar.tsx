@@ -18,7 +18,7 @@ const sidebarItems = [
   },
   {
     icon: <ClipboardClock />,
-    label: 'Pending',
+    label: 'Collected Data',
     name : 'Pending' as tabs,
   },
   {

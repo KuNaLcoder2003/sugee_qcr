@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 import type React from 'react';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import type { Edit, KYCEntries, User } from '../types'
 import { AnimatePresence , motion } from 'framer-motion';
@@ -33,7 +33,7 @@ interface Props {
 
 
 const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
-  bank_code, aadhar_page1_url, aadhar_page2_url, selie_url, sign_url, user_json, setEntries, setIsModalOpen, setEntryToEdit, entries }) => {
+  bank_code, aadhar_page1_url, aadhar_page2_url, selie_url, sign_url, user_json, setEntries, setIsModalOpen, entries }) => {
 
   const [images, setImages] = useState<any[]>([])
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -63,16 +63,16 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
         x: direction < 0 ? 300 : -300,
         opacity: 0,
       }),
-    };
-  const [editedValues, setEditedValues] = useState<User>({
-    aadhar_no: user_json.aadhar_no,
-    father_name: user_json.father_name || "",
-    pan_no: user_json.pan_no,
-    address: user_json.address,
-    name: user_json.name,
-    dob: user_json.dob,
-    gender: user_json.gender
-  })
+    };``
+ const [editedValues, setEditedValues] = useState<User>({
+  aadhar_no: user_json?.aadhar_no || '',
+  father_name: user_json?.father_name || '',
+  pan_no: user_json?.pan_no || '',
+  address: user_json?.address || '',
+  name: user_json?.name || '',
+  dob: user_json?.dob || '',
+  gender: user_json?.gender || ''
+});
 
   useEffect(() => {
     setImages([{
@@ -125,35 +125,35 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     }
 
   }
-  const handleSubmit = (e: FormEvent) => {
+  // const handleSubmit = (e: FormEvent) => {
 
-    e.preventDefault()
-    const formData = new FormData()
-    formData.append('bank_code', bank_code)
-    formData.append("customer_guid", customer_guid)
-    formData.append("gid", gid)
-    formData.append("aadhar_json", editedValues.aadhar_no)
-    formData.append("pan_json", editedValues.pan_no)
-    formData.append("status", "1")
+  //   e.preventDefault()
+  //   const formData = new FormData()
+  //   formData.append('bank_code', bank_code)
+  //   formData.append("customer_guid", customer_guid)
+  //   formData.append("gid", gid)
+  //   formData.append("aadhar_json",  editedValues.aadhar_no || '')
+  //   formData.append("pan_json", editedValues.pan_no ||'')
+  //   formData.append("status", "1")
 
-    try {
-      fetch(EDIT_OCR_DATA_URL, {
-        method: 'POST',
-        body: formData
-      }).then(async (res: Response) => {
-        const data = await res.json()
-        if (data.status == '1') {
-          // DO something
-          toast.success(data.message)
-          let filtered = entries.filter(obj => obj.customer_guid !== customer_guid)
-          setEntries(filtered)
+  //   try {
+  //     fetch(EDIT_OCR_DATA_URL, {
+  //       method: 'POST',
+  //       body: formData
+  //     }).then(async (res: Response) => {
+  //       const data = await res.json()
+  //       if (data.status == '1') {
+  //         // DO something
+  //         toast.success(data.message)
+  //         let filtered = entries.filter(obj => obj.customer_guid !== customer_guid)
+  //         setEntries(filtered)
 
-        }
-      })
-    } catch (error) {
-      toast.error(`${error}`)
-    }
-  }
+  //       }
+  //     })
+  //   } catch (error) {
+  //     toast.error(`${error}`)
+  //   }
+  // }
 
   return (
 
@@ -226,7 +226,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                   <div className='w-full flex items-center gap-2'>
                     {
                       [{ label: "Aadhar Number", placeholder: "Enter user aadhaar number...", value: editedValues.aadhar_no, name: "aadhar_no" },
-                      { label: "Pan Number", placeholder: "Enter user pan number...", value: editedValues.pan_no, name: "pan_no" },].map((field, index) => {
+                      { label: "Pan Number", placeholder: "Enter user pan number...", value: editedValues.pan_no, name: "pan_no" },].map((field) => {
                         return (
                          <div className='flex flex-col'>
                             <label className="block text-sm font-medium text-gray-700">{field.label}</label>
@@ -250,7 +250,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                   <div className='w-full flex items-center gap-2'>
                     {
                       [{ label: "Name", placeholder: "Enter user's name...", value: editedValues.name, name: "name" },
-                      { label: "Father's Name", placeholder: "Enter user's father's name...", value: editedValues.father_name, name: "father_name" },].map((field, index) => {
+                      { label: "Father's Name", placeholder: "Enter user's father's name...", value: editedValues.father_name, name: "father_name" },].map((field) => {
                         return (
                           <div className='flex flex-col'>
                             <label className="block text-sm font-medium text-gray-700">{field.label}</label>
@@ -276,7 +276,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                       [
                         { label: "Gender", placeholder: "Enter user's gender", value: editedValues.gender, name: "gender" },
                         { label: "DOB", placeholder: "Enter user's dob", value: editedValues.dob, name: "dob" }
-                      ].map((field, index) => {
+                      ].map((field) => {
                         return (
                          <div className='flex flex-col'>
                             <label className="block text-sm font-medium text-gray-700">{field.label}</label>
