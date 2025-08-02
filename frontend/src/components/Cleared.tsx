@@ -215,32 +215,7 @@ const Cleared = () => {
     const today = new Date();
     return format(today, 'yyyy-MM-dd'); // For <input type="date" />
   });
-  const [entryToEdit, setEntryToEdit] = useState<Edit>({
-    gid: "",
-    pan_page1_url: "",
-    bank_code: "",
-    aadhar_page1_url: "",
-    aadhar_page2_url: "",
-    selie_url: "",
-    customer_guid: "",
-    account_number: "",
-    cif_number: "",
-    sign_url: "",
-    aadhar_json: "",
-    created_on: "",
-    status: "",
-    user_json: {
-      aadhar_no: '',
-      pan_no: '',
-      father_name: '',
-      name: '',
-      gender: '',
-      dob: '',
-      address: '',
-      account_number : '',
-      cif_number : ''
-    }
-  })
+  const [entryToEdit, setEntryToEdit] = useState<Edit | null>(null);
 
   const loadBranches = async () => {
     setLoadingBanks(true);
@@ -377,7 +352,17 @@ const Cleared = () => {
             <div className="w-[95%] m-auto rounded-lg p-4">
               {
                 isModalOpen ? <div className='fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50'>
-                  <EditWindow entries={entries} setIsModalOpen={setIsModalOpen} setEntryToEdit={setEntryToEdit} branch_code='' setEntries={setEntries} aadhar_json='' {...entryToEdit} />
+                 {entryToEdit && (
+                  <EditWindow
+                    {...entryToEdit}
+                    entries={entries}
+                    setIsModalOpen={setIsModalOpen}
+                    setEntryToEdit={setEntryToEdit}
+                    setEntries={setEntries}
+                    branch_code=""
+                    aadhar_json=""
+                  />
+                )}
                 </div> : null
               }
               <div className="w-full p-2 flex flex-col items-center gap-2 bg-gray-100 rounded-lg">
@@ -389,7 +374,7 @@ const Cleared = () => {
                   <p className='truncate'>Edit</p>
                 </div>
                 {entries.map((obj) => (
-                  <EntryComp setIsModalOpen={setIsModalOpen} setEntryToEdit={setEntryToEdit} key={obj.gid} {...obj} user_json={entryToEdit.user_json} />
+                  <EntryComp setIsModalOpen={setIsModalOpen} setEntryToEdit={setEntryToEdit} key={obj.gid} {...obj} user_json={entryToEdit?.user_json} />
                 ))}
               </div>
             </div>

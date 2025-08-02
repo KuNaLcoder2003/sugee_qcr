@@ -8,7 +8,6 @@ import EntryComp from './EntryComp'
 const FETCH_BANKS_URL = `${import.meta.env.VITE_FETCH_BANKS_URL}`
 const FETCH_OCR_KYC_ENTRIES_URL = `${import.meta.env.VITE_FETCH_Entries_URL}`
 
-
 const Pending = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [entries, setEntries] = useState<KYCEntries[]>([]);
@@ -17,32 +16,7 @@ const Pending = () => {
   const [loadingBanks, setLoadingBanks] = useState<boolean>(false);
   const [selectedBranch, setSelectedBranch] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false)
-  const [entryToEdit, setEntryToEdit] = useState<Edit>({
-    gid: "",
-    pan_page1_url: "",
-    bank_code: "",
-    aadhar_page1_url: "",
-    aadhar_page2_url: "",
-    selie_url: "",
-    customer_guid: "",
-    account_number: "",
-    cif_number: "",
-    sign_url: "",
-    aadhar_json: "",
-    created_on: "",
-    status: "",
-    user_json: {
-      aadhar_no: '',
-      pan_no: '',
-      father_name: '',
-      name: '',
-      gender: '',
-      dob: '',
-      address: '',
-      account_number : '',
-      cif_number : ''
-    }
-  })
+  const [entryToEdit, setEntryToEdit] = useState<Edit | null>(null)
 
   const loadBranches = async () => {
     setLoadingBanks(true);
@@ -63,51 +37,36 @@ const Pending = () => {
 
   const fetchEntries = async (bankCode: string) => {
     try {
-      setLoading(true)
+      setLoading(true);
       const formData = new FormData();
       formData.append("bank_code", bankCode);
-      formData.append("status", "0"); // fetch entry with status : -2 i.e pending one
-      formData.append("limit", "100"); // fetch one at a time
-      // const [year, month, day] = dateStr.split("-");
-      // const formattedDate = `${parseInt(month)}/${parseInt(day)}/${year}`;
-      // console.log(formattedDate)
-      formData.append("fromDate", "8/2/2025");
+      formData.append("status", "0");
+      formData.append("limit", "100");
+      const today = new Date();
+    const formattedDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+    formData.append("fromDate", formattedDate);
 
       const res = await fetch(FETCH_OCR_KYC_ENTRIES_URL, {
         method: 'POST',
         body: formData
       });
       const data = await res.json();
-      console.log(data)
-      if (data.status == '1') {
-        // console.log('Le bhai yeh le teri entries : ' , JSON.parse(data.data[40].user_json))
-        // console.log(JSON.parse(data.data))
-        setEntries(data.data);
+
+      if (data.status === '1') {
+        const parsedEntries: KYCEntries[] = data.data.map((entry: any) => ({
+          ...entry,
+          user_json: JSON.parse(entry.user_json)
+        }));
+        setEntries(parsedEntries);
         setBranchCode(bankCode);
-        setEntryToEdit({
-          aadhar_page1_url: data.data[0].aadhar_page1_url,
-          aadhar_page2_url: data.data[0].aadhar_page2_url,
-          pan_page1_url: data.data[0].pan_page1_url,
-          user_json: JSON.parse(data.data[0].user_json),
-          status: "-1",
-          aadhar_json: "",
-          gid: data.data[0].gid,
-          customer_guid: data.data[0].customer_guid,
-          account_number: "",
-          bank_code: data.data[0].bank_code,
-          selie_url: data.data[0].selie_url,
-          sign_url: data.data[0].sign_url,
-          cif_number: data.data[0].cif_number,
-          created_on: data.data[0].created_on
-        })
         sessionStorage.setItem('bank', bankCode);
       } else {
         toast.error(data.message || 'No data found');
       }
-      setLoading(false)
     } catch (error) {
-      setLoading(false)
       toast.error('Error fetching entries');
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -115,11 +74,10 @@ const Pending = () => {
     const storedBank = sessionStorage.getItem('bank');
     if (!storedBank) {
       loadBranches();
-
     } else {
       fetchEntries(storedBank);
     }
-  }, [entries.length === 0]);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,6 +87,7 @@ const Pending = () => {
     }
     fetchEntries(selectedBranch);
   };
+
   return (
     <>
       {!branchCode ? (
@@ -161,20 +120,26 @@ const Pending = () => {
               </button>
             </form>
           </div>
-
         )
-      ) : loading ? <Loader /> : <>
-        {
-          entries.length === 0 ? (
+      ) : loading ? <Loader /> : (
+        <>
+          {entries.length === 0 ? (
             <div>No record to show</div>
           ) : (
             <div className="w-[95%] m-auto rounded-lg p-4">
-
-              {
-                isModalOpen ? <div className='fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50'>
-                  <EditWindow entries={entries} setIsModalOpen={setIsModalOpen} setEntryToEdit={setEntryToEdit} branch_code='' setEntries={setEntries} aadhar_json='' {...entryToEdit} />
-                </div> : null
-              }
+              {isModalOpen && entryToEdit && (
+                <div className='fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50'>
+                  <EditWindow
+                    entries={entries}
+                    setIsModalOpen={setIsModalOpen}
+                    setEntryToEdit={setEntryToEdit}
+                    setEntries={setEntries}
+                    branch_code={entryToEdit.bank_code}
+                    aadhar_json={entryToEdit.aadhar_json}
+                    {...entryToEdit}
+                  />
+                </div>
+              )}
               <div className="w-full p-2 flex flex-col items-center gap-2 bg-gray-100 rounded-lg">
                 <div className="w-full text-center p-2 grid grid-cols-5 gap-4 text-lg font-bold">
                   <p className='truncate'>Aadhaar Number</p>
@@ -183,16 +148,21 @@ const Pending = () => {
                   <p className='truncate'>Branch Code</p>
                   <p className='truncate'>Edit</p>
                 </div>
-                {entries.map((obj) => (
-                  <EntryComp setIsModalOpen={setIsModalOpen}   setEntryToEdit={setEntryToEdit} key={obj.gid} {...obj} user_json={entryToEdit.user_json} />
+                {entries.map((entry) => (
+                  <EntryComp
+                    key={entry.gid}
+                    {...entry}
+                    setIsModalOpen={setIsModalOpen}
+                    setEntryToEdit={setEntryToEdit}
+                  />
                 ))}
               </div>
             </div>
-          )
-        }
-      </>}
+          )}
+        </>
+      )}
     </>
-  )
+  );
 }
 
-export default Pending
+export default Pending;

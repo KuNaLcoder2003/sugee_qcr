@@ -21,10 +21,10 @@ interface Props {
   branch_code: string;
   cif_number: string;
   sign_url: string;
-  aadhar_json: string;
+  aadhar_json?: string;
   created_on: string;
   status: string;
-  setEntryToEdit: React.Dispatch<React.SetStateAction<Edit>>,
+  setEntryToEdit: React.Dispatch<React.SetStateAction<Edit | null>>,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   user_json: User,
   setEntries: React.Dispatch<React.SetStateAction<any>>,
