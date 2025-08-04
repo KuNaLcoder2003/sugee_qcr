@@ -1,8 +1,8 @@
 import React from 'react'
-import type {Entry} from '../types'
+import type { Entry } from '../types'
 
 const EntryComp: React.FC<Entry> = ({ gid, pan_page1_url, aadhar_page1_url, aadhar_page2_url,
-    selie_url, cif_number, account_number, customer_guid, branch_code, sign_url, created_on, status, bank_code, user_json ,setIsModalOpen, setEntryToEdit }) => {
+    selie_url, cif_number, account_number, customer_guid, branch_code, sign_url, created_on, status, aadhar_json , pan_josn , bank_code, user_json, setIsModalOpen, setEntryToEdit }) => {
     return (
         <div className='w-full mb-4 bg-white rounded-lg'>
             <div className="w-full p-1 grid grid-cols-5 items-center justify-center gap-4 text-sm text-center mb-2">
@@ -12,7 +12,7 @@ const EntryComp: React.FC<Entry> = ({ gid, pan_page1_url, aadhar_page1_url, aadh
                 <p className="truncate">{branch_code}</p>
                 <button onClick={() => {
                     setIsModalOpen(true);
-                        setEntryToEdit({
+                    setEntryToEdit({
                         gid: gid || '',
                         pan_page1_url: pan_page1_url || '',
                         bank_code: bank_code || '',
@@ -35,14 +35,29 @@ const EntryComp: React.FC<Entry> = ({ gid, pan_page1_url, aadhar_page1_url, aadh
                             address: user_json?.address || '',
                             account_number: account_number || '',
                             cif_number: cif_number || '',
-                        }
-                        });
+                        },
+                        aadhar_json: {
+                            aadhar_number: "",
+                            name: '',
+                            relation: '',
+                            relation_name: '',
+                            dob: '',
+                            address: '',
+                            gender: "",
+                        },
+                        pan_josn: {
+                            pan_number: '',
+                            father_name: '',
+                            dob: '',
+                            name: ''
+                        },
+                    });
 
                 }} className='text-center p-1 bg-green-600 text-white rounded-full cursor-pointer'>View</button>
 
             </div>
 
-            
+
         </div>
     )
 }

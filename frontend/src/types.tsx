@@ -107,7 +107,7 @@ export interface Entry {
   created_on: string,
   user_json: User
   status: string,
-  pan_json : Pan,
+  pan_josn : Pan,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   setEntryToEdit: React.Dispatch<React.SetStateAction<EntryEdit |null>>
 }
@@ -125,7 +125,7 @@ export interface EntryEdit {
   cif_number: string,
   sign_url: string,
   aadhar_json?: Aadhaar,
-  pan_json : Pan
+  pan_josn : Pan
   created_on: string,
   status: string,
   user_json: User

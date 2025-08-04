@@ -2,7 +2,7 @@ import { X } from 'lucide-react';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import type { Edit, KYCEntries, User } from '../types'
+import type { Aadhaar, Edit, KYCEntries, Pan, User, USER_AADHAAR_PAN } from '../types'
 import { AnimatePresence, motion } from 'framer-motion';
 
 
@@ -21,9 +21,10 @@ interface Props {
   branch_code: string;
   cif_number: string;
   sign_url: string;
-  aadhar_json?: string;
+  aadhar_json: Aadhaar;
   created_on: string;
   status: string;
+  pan_josn: Pan
   setEntryToEdit: React.Dispatch<React.SetStateAction<Edit | null>>,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   user_json: User,
@@ -33,7 +34,7 @@ interface Props {
 
 
 const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
-  bank_code, aadhar_page1_url, aadhar_page2_url, selie_url, sign_url, user_json, setEntries, setIsModalOpen, entries }) => {
+  bank_code, aadhar_page1_url, aadhar_page2_url, selie_url, sign_url, user_json, account_number, cif_number, setEntries, aadhar_json, pan_josn, setIsModalOpen, entries }) => {
 
   const [images, setImages] = useState<any[]>([])
   const [boxOpen, setBoxOpen] = useState<"Aadhaar" | "Pan">("Aadhaar")
@@ -65,16 +66,30 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
       opacity: 0,
     }),
   };
-  const [editedValues, setEditedValues] = useState<User>({
-    aadhar_no: user_json.aadhar_no,
-    father_name: user_json.father_name || "",
-    pan_no: user_json.pan_no,
-    address: user_json.address,
-    name: user_json.name,
-    dob: user_json.dob,
-    gender: user_json.gender,
-    account_number: user_json.account_number,
-    cif_number: user_json.cif_number
+  const [editedValues, setEditedValues] = useState<USER_AADHAAR_PAN>({
+    user_json: {
+      account_number: account_number,
+      cif_number: cif_number,
+      name: user_json.name,
+      aadhar_no: user_json.aadhar_no,
+      pan_no: user_json.pan_no,
+      dob: user_json.dob,
+      gender: user_json.gender,
+      address: user_json.address
+    },
+    aadhar_json: {
+      aadhar_number: aadhar_json.aadhar_number,
+      dob: aadhar_json.dob,
+      address: aadhar_json.address,
+      gender: aadhar_json.gender,
+      name: aadhar_json.name
+    },
+    pan_josn: {
+      pan_number: pan_josn.pan_number,
+      name: pan_josn.name,
+      father_name: pan_josn.father_name,
+      dob: pan_josn.dob
+    }
   })
 
   useEffect(() => {
@@ -237,7 +252,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                     <>
                       <div className='w-full flex items-center gap-2'>
                         {
-                          [{ label: "Aadhar Number", placeholder: "Enter user aadhaar number...", value: editedValues.aadhar_no, name: "aadhar_no" }].map((field, index) => {
+                          [{ label: "Aadhar Number", placeholder: "Enter user aadhaar number...", value: editedValues.aadhar_json.aadhar_number, name: "aadhar_number" }].map((field, index) => {
                             return (
                               <div key={`${index}_${field.name}`} className='flex flex-col'>
                                 <label className="block text-sm font-medium text-gray-700">{field.label}</label>
@@ -245,11 +260,21 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                   type="text"
                                   placeholder={field.placeholder}
                                   value={field.value}
-                                  onChange={(e) =>
+                                  onChange={(e) => {
                                     setEditedValues({
                                       ...editedValues,
-                                      [field.name]: e.target.value,
+                                      user_json: {
+                                        ...editedValues.user_json,
+                                        aadhar_no: e.target.value
+                                      },
+                                      aadhar_json: {
+                                        ...editedValues.aadhar_json,
+                                        [field.name]: e.target.value
+                                      },
+
                                     })
+                                    console.log(editedValues)
+                                  }
                                   }
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                 />
@@ -260,8 +285,8 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                       </div>
                       <div className='w-full flex items-center gap-2'>
                         {
-                          [{ label: "Name", placeholder: "Enter user's name...", value: editedValues.name, name: "name" },
-                          { label: "Father's Name", placeholder: "Enter user's father's name...", value: editedValues.father_name, name: "father_name" },].map((field, index) => {
+                          [{ label: "Name", placeholder: "Enter user's name...", value: editedValues.aadhar_json.name, name: "name" },
+                          { label: "Father's Name", placeholder: "Enter user's father's name...", value: editedValues.aadhar_json.relation_name, name: "relation_name" },].map((field, index) => {
                             return (
                               <div key={`${index}_${field.name}`} className='flex flex-col'>
                                 <label className="block text-sm font-medium text-gray-700">{field.label}</label>
@@ -272,7 +297,15 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                   onChange={(e) =>
                                     setEditedValues({
                                       ...editedValues,
-                                      [field.name]: e.target.value,
+                                      user_json: {
+                                        ...editedValues.user_json,
+                                        ...(field.name === "name" && { name: e.target.value }),
+                                      },
+                                      aadhar_json: {
+                                        ...editedValues.aadhar_json,
+                                        [field.name]: e.target.value,
+                                      }
+
                                     })
                                   }
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
@@ -285,8 +318,8 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                       <div className='w-full flex items-center gap-2'>
                         {
                           [
-                            { label: "Gender", placeholder: "Enter user's gender", value: editedValues.gender, name: "gender" },
-                            { label: "DOB", placeholder: "Enter user's dob", value: editedValues.dob, name: "dob" }
+                            { label: "Gender", placeholder: "Enter user's gender", value: editedValues.aadhar_json.gender, name: "gender" },
+                            { label: "DOB", placeholder: "Enter user's dob", value: editedValues.aadhar_json.dob, name: "dob" }
                           ].map((field, index) => {
                             return (
                               <div key={`${index}_${field.name}`} className='flex flex-col'>
@@ -298,7 +331,14 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                   onChange={(e) =>
                                     setEditedValues({
                                       ...editedValues,
-                                      [field.name]: e.target.value,
+                                      user_json: {
+                                        ...editedValues.user_json,
+                                        [field.name]: e.target.value
+                                      },
+                                      aadhar_json: {
+                                        ...editedValues.aadhar_json,
+                                        [field.name]: e.target.value,
+                                      }
                                     })
                                   }
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
@@ -309,7 +349,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                         }
                       </div>
                       {[
-                        { label: "Address", placeholder: "Enter user's address...", value: editedValues.address, name: "address" },
+                        { label: "Address", placeholder: "Enter user's address...", value: editedValues.aadhar_json.address, name: "address" },
                       ].map((field, index) => (
                         <div key={index} className="space-y-2">
                           <label className="block text-sm font-medium text-gray-700">{field.label}</label>
@@ -320,7 +360,10 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                             onChange={(e) =>
                               setEditedValues({
                                 ...editedValues,
-                                [field.name]: e.target.value,
+                                aadhar_json: {
+                                  ...editedValues.aadhar_json,
+                                  [field.name]: e.target.value,
+                                }
                               })
                             }
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
@@ -343,7 +386,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                       <div className='w-full flex items-center gap-2'>
                         {
                           [
-                            { label: "Pan Number", placeholder: "Enter user pan number...", value: editedValues.pan_no, name: "pan_no" },].map((field, index) => {
+                            { label: "Pan Number", placeholder: "Enter user pan number...", value: editedValues.pan_josn.pan_number, name: "pan_number" },].map((field, index) => {
                               return (
                                 <div key={`${index}_${field.name}`} className='flex flex-col'>
                                   <label className="block text-sm font-medium text-gray-700">{field.label}</label>
@@ -354,7 +397,14 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     onChange={(e) =>
                                       setEditedValues({
                                         ...editedValues,
-                                        [field.name]: e.target.value,
+                                        user_json: {
+                                          ...editedValues.user_json,
+                                          pan_no: e.target.value
+                                        },
+                                        pan_josn: {
+                                          ...editedValues.pan_josn,
+                                          [field.name]: e.target.value,
+                                        }
                                       })
                                     }
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
@@ -367,7 +417,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                       <div className='w-full flex items-center gap-2'>
                         {
                           [
-                            { label: "Name on Pan", placeholder: "Enter user name...", value: editedValues.name, name: "name" },].map((field, index) => {
+                            { label: "Name on Pan", placeholder: "Enter user name...", value: editedValues.pan_josn.name, name: "name" },].map((field, index) => {
                               return (
                                 <div key={`${index}_${field.name}`} className='flex flex-col'>
                                   <label className="block text-sm font-medium text-gray-700">{field.label}</label>
@@ -378,7 +428,10 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     onChange={(e) =>
                                       setEditedValues({
                                         ...editedValues,
-                                        [field.name]: e.target.value,
+                                        pan_josn: {
+                                          ...editedValues.pan_josn,
+                                          [field.name]: e.target.value,
+                                        }
                                       })
                                     }
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
@@ -391,7 +444,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                       <div className='w-full flex items-center gap-2'>
                         {
                           [
-                            { label: "Name on Pan", placeholder: "Enter user pan number...", value: editedValues.name, name: "name" },].map((field, index) => {
+                            { label: "Father Name on Pan", placeholder: "Enter user pan number...", value: editedValues.pan_josn.father_name, name: "father_name" },].map((field, index) => {
                               return (
                                 <div key={`${index}_${field.name}`} className='flex flex-col'>
                                   <label className="block text-sm font-medium text-gray-700">{field.label}</label>
@@ -402,7 +455,14 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     onChange={(e) =>
                                       setEditedValues({
                                         ...editedValues,
-                                        [field.name]: e.target.value,
+                                        user_json: {
+                                          ...editedValues.user_json,
+                                          father_name: e.target.value
+                                        },
+                                        pan_josn: {
+                                          ...editedValues.pan_josn,
+                                          [field.name]: e.target.value,
+                                        }
                                       })
                                     }
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
@@ -417,29 +477,30 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                 }
               </div>
             </div>
+            {/* Pan Box */}
+          </div>
 
-            <div className="flex justify-end space-x-3 pt-4">
-              <button
-                type="button"
-                onClick={() => handleClear("-3")}
-                className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-700 transition-colors"
-              >
-                Clear
-              </button>
-              <button
-                type="button"
-                onClick={() => handleClear("-2")}
-                className="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 transition-colors"
-              >
-                Mark as Pending
-              </button>
-              <button
-                type="submit"
-                className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Submit
-              </button>
-            </div>
+          <div className="flex justify-end space-x-3 pt-4">
+            <button
+              type="button"
+              onClick={() => handleClear("-3")}
+              className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-700 transition-colors"
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              onClick={() => handleClear("-2")}
+              className="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 transition-colors"
+            >
+              Mark as Pending
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Submit
+            </button>
           </div>
         </div>
       </div>
