@@ -10,7 +10,7 @@ const FETCH_BANKS_URL = `${import.meta.env.VITE_FETCH_BANKS_URL}`
 const FETCH_OCR_KYC_ENTRIES_URL = `${import.meta.env.VITE_FETCH_Entries_URL}`
 const EDIT_OCR_DATA_URL = `${import.meta.env.VITE_UPDATE_OCR_DATA}`
 const FTECH_Branch_Customers = `${import.meta.env.VITE_FETCH_CUSTOMERS}`
-const FETCH_BRANCHES =  `${import.meta.env.VITE_GET_BANK_BRANCHES}`
+const FETCH_BRANCHES = `${import.meta.env.VITE_GET_BANK_BRANCHES}`
 
 const Entries = () => {
     const [customers, setCustomers] = useState<Customer[]>([])
@@ -37,7 +37,21 @@ const Entries = () => {
         account_number: "",
         cif_number: "",
         sign_url: "",
-        aadhar_json: "",
+        aadhar_json: {
+            aadhar_number : "",
+            name : '',
+            relation : '',
+            relation_name : '',
+            dob : '',
+            address : '',
+            gender : "",
+        },
+        pan_josn : {
+            pan_number : '',
+            father_name : '',
+            dob : '',
+            name : ''
+        },
         created_on: "",
         status: "",
         user_json: {
@@ -54,13 +68,13 @@ const Entries = () => {
     })
     useEffect(() => {
         const storedBank = sessionStorage.getItem('bank') as string
-        const storedDate = sessionStorage.getItem('date') as string
+        // const storedDate = sessionStorage.getItem('date') as string
         const storedBranch = sessionStorage.getItem('branch') as string
         if (!storedBank) {
             loadBranches();
 
         } else {
-            fetchEntries(storedBank, storedDate, storedBranch);
+            fetchEntries(storedBank, storedBranch);
             fetchBranchCustomers(storedBank, storedBranch)
         }
     }, [entries.length === 0]);
@@ -125,24 +139,33 @@ const Entries = () => {
         setLoadingCustomers(false)
 
     }
-    const fetchEntries = async (bankCode: string, dateStr: string, branch_code: string) => {
+    const fetchEntries = async (bankCode: string, branch_code: string) => {
         try {
             setLoading(true)
+            console.log("Clicked")
             const formData = new FormData();
             formData.append("bank_code", bankCode);
             formData.append("status", "0"); // fetch entry with status : 0 i.e unassigned one
             formData.append("limit", "1"); // fetch one at a time
+            const today = new Date();
+
+            const formatted =
+                String(today.getMonth() + 1).padStart(2, '0') + '/' +
+                String(today.getDate()).padStart(2, '0') + '/' +
+                today.getFullYear();
             // formData.append("branch_code", branch_code)
-            const [year, month, day] = dateStr.split("-");
-            const formattedDate = `${parseInt(month)}/${parseInt(day)}/${year}`;
-            console.log(formattedDate)
-            formData.append("fromDate", formattedDate);
+            // const [year, month, day] = dateStr.split("-");
+            // const formattedDate = `${parseInt(month)}/${parseInt(day)}/${year}`;
+            // console.log(formattedDate)
+            formData.append("fromDate", '8/2/2025');
 
             const res = await fetch(FETCH_OCR_KYC_ENTRIES_URL, {
                 method: 'POST',
                 body: formData
             });
             const data = await res.json();
+            console.log('Aadhaar : ' , JSON.parse(data.data[0].aadhar_json))
+            console.log('Pan : ' , JSON.parse(data.data[0].pan_json))
             if (data.status == '1') {
                 setEntries(data.data);
                 const new_form = new FormData()
@@ -169,7 +192,8 @@ const Entries = () => {
                     pan_page1_url: data.data[0].pan_page1_url,
                     user_json: data.data[0].user_json.length > 0 ? JSON.parse(data.data[0].user_json) : "",
                     status: "-1",
-                    aadhar_json: "",
+                    aadhar_json: data.data[0].aadhar_json.length > 0 ? JSON.parse(data.data[0].aadhar_json) : "" ,
+                    pan_josn : data.data[0].pan_json.length > 0 ? JSON.parse(data.data[0].pan_json) : "",
                     gid: data.data[0].gid,
                     customer_guid: data.data[0].customer_guid,
                     account_number: data.data[0].account_number,
@@ -180,7 +204,7 @@ const Entries = () => {
                     created_on: data.data[0].created_on
                 })
                 sessionStorage.setItem('bank', bankCode);
-                sessionStorage.setItem('date', selectedDate)
+                // sessionStorage.setItem('date', selectedDate)
                 sessionStorage.setItem('branch', branch_code)
             } else {
                 toast.error(data.message || 'No data found');
@@ -202,11 +226,7 @@ const Entries = () => {
             toast.error("Please select a valid date");
             return;
         }
-        if (!selectedDate) {
-            toast.error("Please select a valid date");
-            return;
-        }
-        fetchEntries(selectedBank, selectedDate, selectedBranch);
+        fetchEntries(selectedBank, selectedBranch);
     };
     return (
         <>
@@ -214,97 +234,129 @@ const Entries = () => {
                 loadingBanks ? (
                     <Loader />
                 ) : (
-                    <div className="w-[95%] m-auto rounded-lg p-4 bg-gray-100 shadow-md">
-                        {/* <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
-                            <label htmlFor="branch-select" className="text-lg font-semibold text-gray-700">
-                                Select Branch:
-                            </label>
-                            <select
-                                id="branch-select"
-                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                value={selectedBranch}
-                                onChange={(e) => setSelectedBranch(e.target.value)}
-                            >
-                                <option value="">Select a Value</option>
-                                {branches.map((branch) => (
-                                    <option key={branch.bank_code} value={branch.bank_code}>
-                                        {branch.bank_code}
-                                    </option>
-                                ))}
-                            </select>
-                            <button
-                                type="submit"
-                                className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-900 transition-colors"
-                            >
-                                Get Entries
-                            </button>
-                        </form> */}
-                        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
-                            <label htmlFor="bank-select" className="text-lg font-semibold text-gray-700">
-                                Select Bank:
-                            </label>
-                            <select
-                                id="bank-select"
-                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                value={selectedBank}
-                                onChange={(e) => {
-                                    setSelectedBank(e.target.value)
-                                    fetch_bank_branches(e.target.value)
-                                }}
-                            >
-                                <option value="">Select a Value</option>
-                                {banks.map((bank) => (
-                                    <option key={bank.bank_code} value={bank.bank_code}>
-                                        {bank.bank_name}
-                                    </option>
-                                ))}
-                            </select>
-                            {
-                                selectedBank.length > 0 && banks.length > 0 ? <>
-                                    {
-                                        branchLoading ? <Loader /> : (
-                                            <>
-                                                <label htmlFor="branch-select" className="text-lg font-semibold text-gray-700">
-                                                    Select Branch :
-                                                </label>
-                                                <select
-                                                    id="branch-select"
-                                                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                                    value={selectedBranch}
-                                                    onChange={(e) => { setSelectedBarnch(e.target.value); fetchBranchCustomers(selectedBank, e.target.value) }}
-                                                >
-                                                    <option value="">Select a Value</option>
-                                                    {branches.map((branch) => (
-                                                        <option key={branch.branch_code} value={branch.branch_code}>
-                                                            {branch.branch_name}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </>
-                                        )
-                                    }
-                                </> : (null)
-                            }
+                    // <div className="w-[95%] m-auto rounded-lg p-4 bg-gray-100 shadow-md">
 
-                            <label htmlFor="date-select" className="text-lg font-semibold text-gray-700">
-                                Select Date:
-                            </label>
-                            <input
-                                type="date"
-                                id="date-select"
-                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                value={selectedDate}
-                                onChange={(e) => setSelectedDate(e.target.value)}
-                            />
+                    //     <form onSubmit={handleSubmit} className="w-full flex gap-4">
+                    //         <div className='flex items-center w-full gap-4'>
+                    //             <label htmlFor="bank-select" className="text-lg font-semibold text-gray-700">
+                    //                 Select Bank:
+                    //             </label>
+                    //             <select
+                    //                 id="bank-select"
+                    //                 className="w-[50%] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    //                 value={selectedBank}
+                    //                 onChange={(e) => {
+                    //                     setSelectedBank(e.target.value)
+                    //                     fetch_bank_branches(e.target.value)
+                    //                 }}
+                    //             >
+                    //                 <option value="">Select a Value</option>
+                    //                 {banks.map((bank) => (
+                    //                     <option className='w-full' key={bank.bank_code} value={bank.bank_code}>
+                    //                         {bank.bank_name}
+                    //                     </option>
+                    //                 ))}
+                    //             </select>
+                    //         </div>
+                    //         <div className='flex items-center gap-4 w-full'>
+                    //             <label htmlFor="branch-select" className="text-lg font-semibold text-gray-700">
+                    //                 Select Branch :
+                    //             </label>
+                    //             <select
+                    //                 id="branch-select"
+                    //                 className="w-[50%] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    //                 value={selectedBranch}
+                    //                 onChange={(e) => { setSelectedBarnch(e.target.value); fetchBranchCustomers(selectedBank, e.target.value) }}
+                    //             >
+                    //                 <option value="">Select a Value</option>
+                    //                 {branches.map((branch) => (
+                    //                     <option key={branch.branch_code} value={branch.branch_code}>
+                    //                         {branch.branch_code}
+                    //                     </option>
+                    //                 ))}
+                    //             </select>
+                    //         </div>
 
-                            <button
-                                type="submit"
-                                className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-900 transition-colors"
-                            >
-                                Get Entries
-                            </button>
+                    //         {/* <label htmlFor="date-select" className="text-lg font-semibold text-gray-700">
+                    //             Select Date:
+                    //         </label>
+                    //         <input
+                    //             type="date"
+                    //             id="date-select"
+                    //             className="w-[20%] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    //             value={selectedDate}
+                    //             onChange={(e) => setSelectedDate(e.target.value)}
+                    //         /> */}
+
+                    //         <button
+                    //             type="submit"
+                    //             className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-900 transition-colors w-[20%]"
+                    //         >
+                    //             Get Entries
+
+                    //         </button>
+                    //     </form>
+                    // </div>
+                    <div className="w-[95%] max-w-5xl mx-auto rounded-lg p-6 bg-gray-100 shadow-md">
+                        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6 md:flex-row md:flex-wrap">
+                            {/* Bank Selector */}
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full md:w-[48%]">
+                                <label htmlFor="bank-select" className="text-lg font-semibold text-gray-700 min-w-[100px]">
+                                    Select Bank:
+                                </label>
+                                <select
+                                    id="bank-select"
+                                    className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    value={selectedBank}
+                                    onChange={(e) => {
+                                        setSelectedBank(e.target.value);
+                                        fetch_bank_branches(e.target.value);
+                                    }}
+                                >
+                                    <option value="">Select a Value</option>
+                                    {banks.map((bank) => (
+                                        <option key={bank.bank_code} value={bank.bank_code}>
+                                            {bank.bank_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Branch Selector */}
+                            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full md:w-[48%]">
+                                <label htmlFor="branch-select" className="text-lg font-semibold text-gray-700 min-w-[100px]">
+                                    Select Branch:
+                                </label>
+                                <select
+                                    id="branch-select"
+                                    className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    value={selectedBranch}
+                                    onChange={(e) => {
+                                        setSelectedBarnch(e.target.value);
+                                        fetchBranchCustomers(selectedBank, e.target.value);
+                                    }}
+                                >
+                                    <option value="">Select a Value</option>
+                                    {branches.map((branch) => (
+                                        <option key={branch.branch_code} value={branch.branch_code}>
+                                            {branch.branch_code}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Submit Button */}
+                            <div className="w-full md:w-auto flex justify-end mt-2 md:mt-0">
+                                <button
+                                    type="submit"
+                                    className="w-full md:w-auto bg-green-700 text-white px-6 py-2 rounded-md hover:bg-green-900 transition-colors"
+                                >
+                                    Get Entries
+                                </button>
+                            </div>
                         </form>
                     </div>
+
 
                 )
             ) : loading ? <Loader /> : <>
@@ -328,7 +380,7 @@ const Entries = () => {
                                                     <div className='w-full'>
                                                         <DropdownSearch items={customers} />
                                                     </div>
-                                                    <Window setEntries={setEntries} branch_code='' aadhar_json='' {...entryToEdit} />
+                                                    <Window setEntries={setEntries} branch_code=''  {...entryToEdit} />
 
                                                 </div>
                                             )
