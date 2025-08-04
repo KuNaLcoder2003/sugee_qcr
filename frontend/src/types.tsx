@@ -1,15 +1,15 @@
 import React from "react";
 
 export interface User {
-  aadhar_no?: string;
-  father_name?: string;
-  pan_no?: string;
-  address?: string;
-  name?: string;
-  dob?: string;
-  gender?: string;
-  account_number?: string;
-  cif_number?: string;
+  aadhar_no: string;
+  father_name: string;
+  pan_no: string;
+  address: string;
+  name: string;
+  dob: string;
+  gender: string;
+  account_number: string;
+  cif_number: string;
 }
 export interface USER_AADHAAR_PAN {
   user_json : User,
@@ -48,7 +48,7 @@ export interface KYCEntries {
   sign_path: string;
   status: string;
   user_json: User,
-  pan_json : Pan,
+  pan_josn : Pan,
 }
 export interface Aadhaar {
   aadhar_number: string,
@@ -90,7 +90,6 @@ export interface Branch {
   bank_name: string;
   active: string;
 }
-
 export interface Entry {
   gid: string,
   pan_page1_url: string,
@@ -103,13 +102,13 @@ export interface Entry {
   branch_code: string,
   cif_number: string,
   sign_url: string,
-  aadhar_json?: Aadhaar,
+  aadhar_json: Aadhaar,
   created_on: string,
   user_json: User
   status: string,
   pan_josn : Pan,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  setEntryToEdit: React.Dispatch<React.SetStateAction<EntryEdit |null>>
+  setEntryToEdit: React.Dispatch<React.SetStateAction<EntryEdit>>
 }
 
 export interface EntryEdit {
@@ -124,7 +123,7 @@ export interface EntryEdit {
   branch_code?: string,
   cif_number: string,
   sign_url: string,
-  aadhar_json?: Aadhaar,
+  aadhar_json: Aadhaar,
   pan_josn : Pan
   created_on: string,
   status: string,

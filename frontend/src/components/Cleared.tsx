@@ -215,7 +215,45 @@ const Cleared = () => {
     const today = new Date();
     return format(today, 'yyyy-MM-dd'); // For <input type="date" />
   });
-  const [entryToEdit, setEntryToEdit] = useState<Edit | null>(null);
+  const [entryToEdit, setEntryToEdit] = useState<Edit>({
+    gid: '',
+    account_number: '',
+    cif_number: '',
+    customer_guid: '',
+    pan_page1_url: '',
+    aadhar_page1_url: '',
+    aadhar_page2_url: '',
+    bank_code: '',
+    branch_code: '',
+    sign_url: '',
+    selie_url: '',
+    created_on: '',
+    status: '',
+    user_json: {
+      account_number: '',
+      cif_number: '',
+      name: '',
+      aadhar_no: '',
+      father_name: '',
+      pan_no: '',
+      dob: '',
+      gender: '',
+      address: ''
+    },
+    aadhar_json: {
+      aadhar_number: '',
+      dob: '',
+      address: '',
+      gender: '',
+      name: ''
+    },
+    pan_josn: {
+      pan_number: '',
+      name: '',
+      father_name: '',
+      dob: '',
+    }
+  });
 
   const loadBranches = async () => {
     setLoadingBanks(true);
@@ -259,7 +297,8 @@ const Cleared = () => {
           pan_page1_url: data.data[0].pan_page1_url,
           user_json: JSON.parse(data.data[0].user_json),
           status: "-1",
-          aadhar_json: "",
+          aadhar_json: JSON.parse(data.data[0].aadhar_json),
+          pan_josn: JSON.parse(data.data[0].pan_josn),
           gid: data.data[0].gid,
           customer_guid: data.data[0].customer_guid,
           account_number: "",
@@ -352,17 +391,16 @@ const Cleared = () => {
             <div className="w-[95%] m-auto rounded-lg p-4">
               {
                 isModalOpen ? <div className='fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50'>
-                 {entryToEdit && (
-                  <EditWindow
-                    {...entryToEdit}
-                    entries={entries}
-                    setIsModalOpen={setIsModalOpen}
-                    setEntryToEdit={setEntryToEdit}
-                    setEntries={setEntries}
-                    branch_code=""
-                    aadhar_json=""
-                  />
-                )}
+                  {entryToEdit && (
+                    <EditWindow
+                      {...entryToEdit}
+                      entries={entries}
+                      setIsModalOpen={setIsModalOpen}
+                      setEntryToEdit={setEntryToEdit}
+                      setEntries={setEntries}
+                      branch_code=""
+                    />
+                  )}
                 </div> : null
               }
               <div className="w-full p-2 flex flex-col items-center gap-2 bg-gray-100 rounded-lg">

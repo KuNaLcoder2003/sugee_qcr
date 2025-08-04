@@ -16,7 +16,45 @@ const Pending = () => {
   const [loadingBanks, setLoadingBanks] = useState<boolean>(false);
   const [selectedBranch, setSelectedBranch] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false)
-  const [entryToEdit, setEntryToEdit] = useState<Edit | null>(null)
+  const [entryToEdit, setEntryToEdit] = useState<Edit>({
+    gid: '',
+    account_number: '',
+    cif_number: '',
+    customer_guid: '',
+    pan_page1_url: '',
+    aadhar_page1_url: '',
+    aadhar_page2_url: '',
+    bank_code: '',
+    branch_code: '',
+    sign_url: '',
+    selie_url: '',
+    created_on : '',
+    status : '',
+    user_json: {
+      account_number: '',
+      cif_number: '',
+      name: '',
+      aadhar_no: '',
+      father_name : '',
+      pan_no: '',
+      dob: '',
+      gender: '',
+      address: ''
+    },
+    aadhar_json: {
+      aadhar_number: '',
+      dob: '',
+      address: '',
+      gender: '',
+      name: ''
+    },
+    pan_josn: {
+      pan_number: '',
+      name: '',
+      father_name: '',
+      dob: '',
+    }
+  })
 
   const loadBranches = async () => {
     setLoadingBanks(true);
@@ -43,8 +81,8 @@ const Pending = () => {
       formData.append("status", "0");
       formData.append("limit", "100");
       const today = new Date();
-    const formattedDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
-    formData.append("fromDate", formattedDate);
+      const formattedDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+      formData.append("fromDate", formattedDate);
 
       const res = await fetch(FETCH_OCR_KYC_ENTRIES_URL, {
         method: 'POST',
@@ -55,7 +93,9 @@ const Pending = () => {
       if (data.status === '1') {
         const parsedEntries: KYCEntries[] = data.data.map((entry: any) => ({
           ...entry,
-          user_json: JSON.parse(entry.user_json)
+          user_json: JSON.parse(entry.user_json),
+          aadhar_json: JSON.parse(entry.aadhar_json),
+          pan_josn: JSON.parse(entry.pan_josn)
         }));
         setEntries(parsedEntries);
         setBranchCode(bankCode);
@@ -133,9 +173,9 @@ const Pending = () => {
                     entries={entries}
                     setIsModalOpen={setIsModalOpen}
                     setEntryToEdit={setEntryToEdit}
+                    
                     setEntries={setEntries}
                     branch_code={entryToEdit.bank_code}
-                    aadhar_json={entryToEdit.aadhar_json}
                     {...entryToEdit}
                   />
                 </div>

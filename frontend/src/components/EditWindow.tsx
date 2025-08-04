@@ -25,7 +25,7 @@ interface Props {
   created_on: string;
   status: string;
   pan_josn: Pan
-  setEntryToEdit: React.Dispatch<React.SetStateAction<Edit | null>>,
+  setEntryToEdit: React.Dispatch<React.SetStateAction<Edit>>,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   user_json: User,
   setEntries: React.Dispatch<React.SetStateAction<any>>,
@@ -70,6 +70,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     user_json: {
       account_number: account_number,
       cif_number: cif_number,
+      father_name: user_json.father_name,
       name: user_json.name,
       aadhar_no: user_json.aadhar_no,
       pan_no: user_json.pan_no,
@@ -180,6 +181,48 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
       <div className="bg-white m-auto rounded-lg shadow-xl w-[90%] max-h-[90vh] overflow-y-auto p-6">
         <div className='w-full flex items-center justify-between'>
           <h2 className="text-2xl font-bold text-gray-900 mb-6">KYC Details</h2>
+          <div className='flex items-center gap-6'>
+            <div className='flex items-center gap-4'>
+              <p>Account Number : </p>
+              <input
+                type="text"
+                placeholder={'Enter account number...'}
+                value={editedValues.user_json.account_number}
+                onChange={(e) =>
+                  setEditedValues({
+                    ...editedValues,
+                    user_json: {
+                      ...editedValues.user_json,
+                      account_number: e.target.value
+                    },
+
+
+                  })
+                }
+                className="max-w-[80%] px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+            <div className='flex items-center gap-4'>
+              <p>CIF Number : </p>
+              <input
+                type="text"
+                placeholder={'Enter cif number...'}
+                value={editedValues.user_json.cif_number}
+                onChange={(e) =>
+                  setEditedValues({
+                    ...editedValues,
+                    user_json: {
+                      ...editedValues.user_json,
+                      cif_number: e.target.value
+                    },
+                  })
+                }
+                className="max-w-[80%] px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+            {/* <p className='text-lg font-semibold'>Account Number : <span className='font-normal'>{editedValues.user_json.account_number}</span></p>
+                <p className='text-lg font-semibold'>CIF Number : <span className='font-normal'>{editedValues.user_json.cif_number}</span></p> */}
+          </div>
           <X className='cursor-pointer' onClick={() => {
             setIsModalOpen(false)
           }} />
@@ -447,6 +490,37 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                             { label: "Father Name on Pan", placeholder: "Enter user pan number...", value: editedValues.pan_josn.father_name, name: "father_name" },].map((field, index) => {
                               return (
                                 <div key={`${index}_${field.name}`} className='flex flex-col'>
+                                  <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+                                  <input
+                                    type="text"
+                                    placeholder={field.placeholder}
+                                    value={field.value}
+                                    onChange={(e) =>
+                                      setEditedValues({
+                                        ...editedValues,
+                                        user_json: {
+                                          ...editedValues.user_json,
+                                          father_name: e.target.value
+                                        },
+                                        pan_josn: {
+                                          ...editedValues.pan_josn,
+                                          [field.name]: e.target.value,
+                                        }
+                                      })
+                                    }
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                  />
+                                </div>
+                              )
+                            })
+                        }
+                      </div>
+                      <div className='w-full flex items-center gap-2'>
+                        {
+                          [
+                            { label: "DOB", placeholder: "Enter user dob...", value: editedValues.pan_josn.dob, name: "dob" },].map((field, index) => {
+                              return (
+                                <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
                                   <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                   <input
                                     type="text"

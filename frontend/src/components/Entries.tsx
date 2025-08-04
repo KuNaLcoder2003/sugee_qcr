@@ -15,9 +15,9 @@ const FETCH_BRANCHES = `${import.meta.env.VITE_GET_BANK_BRANCHES}`
 const Entries = () => {
     const [customers, setCustomers] = useState<Customer[]>([])
     const [loadingCustomers, setLoadingCustomers] = useState<boolean>(false)
-    const [branchLoading, setBranchLoading] = useState<boolean>(false)
+    // const [branchLoading, setBranchLoading] = useState<boolean>(false)
     const [entries, setEntries] = useState<KYCEntries[]>([]);
-    const [selectedDate, setSelectedDate] = useState<string>(sessionStorage.getItem('date') || '');
+    // const [selectedDate, setSelectedDate] = useState<string>(sessionStorage.getItem('date') || '');
     const [bankCode, setBankCode] = useState<string>(sessionStorage.getItem('bank') || '');
     const [branches, setBranches] = useState<any[]>([])
     const [selectedBranch, setSelectedBarnch] = useState<string>("")
@@ -25,7 +25,7 @@ const Entries = () => {
     const [loadingBanks, setLoadingBanks] = useState<boolean>(false);
     const [selectedBank, setSelectedBank] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false)
-   // const [branchCode, setBranchCode] = useState<string>(() => sessionStorage.getItem('branch') ?? '');
+    // const [branchCode, setBranchCode] = useState<string>(() => sessionStorage.getItem('branch') ?? '');
     const [entryToEdit, setEntryToEdit] = useState<Edit>({
         gid: "",
         pan_page1_url: "",
@@ -38,19 +38,19 @@ const Entries = () => {
         cif_number: "",
         sign_url: "",
         aadhar_json: {
-            aadhar_number : "",
-            name : '',
-            relation : '',
-            relation_name : '',
-            dob : '',
-            address : '',
-            gender : "",
+            aadhar_number: "",
+            name: '',
+            relation: '',
+            relation_name: '',
+            dob: '',
+            address: '',
+            gender: "",
         },
-        pan_josn : {
-            pan_number : '',
-            father_name : '',
-            dob : '',
-            name : ''
+        pan_josn: {
+            pan_number: '',
+            father_name: '',
+            dob: '',
+            name: ''
         },
         created_on: "",
         status: "",
@@ -77,7 +77,7 @@ const Entries = () => {
             fetchEntries(storedBank, storedBranch);
             fetchBranchCustomers(storedBank, storedBranch)
         }
-    }, [entries.length === 0]);
+    }, [entries.length === 0 , selectedBank.length == 0]);
     const loadBranches = async () => {
         setLoadingBanks(true);
         try {
@@ -95,7 +95,7 @@ const Entries = () => {
         }
     };
     const fetch_bank_branches = async (bankCode: string) => {
-        setBranchLoading(true)
+        // setBranchLoading(true)
         try {
             const formData = new FormData()
             formData.append("bank_code", bankCode)
@@ -110,10 +110,10 @@ const Entries = () => {
                 toast.error(bank_branches_data.message)
                 return
             }
-            setBranchLoading(false)
+            // setBranchLoading(false)
         } catch (error) {
             toast.error('Error fetching branch details')
-            setBranchLoading(false)
+            // setBranchLoading(false)
         }
     }
     const fetchBranchCustomers = async (bankCode: string, branchCode: string) => {
@@ -147,12 +147,12 @@ const Entries = () => {
             formData.append("bank_code", bankCode);
             formData.append("status", "0"); // fetch entry with status : 0 i.e unassigned one
             formData.append("limit", "1"); // fetch one at a time
-            const today = new Date();
+            // const today = new Date();
 
-            const formatted =
-                String(today.getMonth() + 1).padStart(2, '0') + '/' +
-                String(today.getDate()).padStart(2, '0') + '/' +
-                today.getFullYear();
+            // const formatted =
+            //     String(today.getMonth() + 1).padStart(2, '0') + '/' +
+            //     String(today.getDate()).padStart(2, '0') + '/' +
+            //     today.getFullYear();
             // formData.append("branch_code", branch_code)
             // const [year, month, day] = dateStr.split("-");
             // const formattedDate = `${parseInt(month)}/${parseInt(day)}/${year}`;
@@ -164,8 +164,8 @@ const Entries = () => {
                 body: formData
             });
             const data = await res.json();
-            console.log('Aadhaar : ' , JSON.parse(data.data[0].aadhar_json))
-            console.log('Pan : ' , JSON.parse(data.data[0].pan_json))
+            console.log('Aadhaar : ', JSON.parse(data.data[0].aadhar_json))
+            console.log('Pan : ', JSON.parse(data.data[0].pan_json))
             if (data.status == '1') {
                 setEntries(data.data);
                 const new_form = new FormData()
@@ -192,8 +192,8 @@ const Entries = () => {
                     pan_page1_url: data.data[0].pan_page1_url,
                     user_json: data.data[0].user_json.length > 0 ? JSON.parse(data.data[0].user_json) : "",
                     status: "-1",
-                    aadhar_json: data.data[0].aadhar_json.length > 0 ? JSON.parse(data.data[0].aadhar_json) : "" ,
-                    pan_josn : data.data[0].pan_json.length > 0 ? JSON.parse(data.data[0].pan_json) : "",
+                    aadhar_json: data.data[0].aadhar_json.length > 0 ? JSON.parse(data.data[0].aadhar_json) : "",
+                    pan_josn: data.data[0].pan_json.length > 0 ? JSON.parse(data.data[0].pan_json) : "",
                     gid: data.data[0].gid,
                     customer_guid: data.data[0].customer_guid,
                     account_number: data.data[0].account_number,
@@ -371,15 +371,19 @@ const Entries = () => {
                                         {
                                             loadingCustomers ? <Loader /> : (
                                                 <div className="w-[100%] m-auto rounded-lg p-4 flex flex-col items-center gap-4">
-                                                    <button className='w-[30%] p-2 text-lg font-bold text-white bg-red-500 rounded-lg m-auto cursor-pointer shadow-lg' onClick={() => {
-                                                        sessionStorage.removeItem("branch")
-                                                        sessionStorage.removeItem("bank")
-                                                        setBankCode("")
-                                                        setSelectedBank("")
-                                                    }}>Reset</button>
-                                                    <div className='w-full'>
-                                                        <DropdownSearch items={customers} />
+                                                    <div className='flex flex-row items-center w-full justify-between gap-6'>
+                                                        <div className='w-[80%]'>
+                                                            <DropdownSearch items={customers} />
+                                                        </div>
+                                                        <button className='w-[20%] p-2 text-lg font-bold text-white bg-red-500 rounded-lg m-auto cursor-pointer shadow-lg' onClick={() => {
+                                                            sessionStorage.removeItem("branch")
+                                                            sessionStorage.removeItem("bank")
+                                                            setBankCode("")
+                                                            setSelectedBank("")
+                                                        }}>Reset</button>
+                                                        
                                                     </div>
+
                                                     <Window setEntries={setEntries} branch_code=''  {...entryToEdit} />
 
                                                 </div>

@@ -37,19 +37,19 @@ const EntryComp: React.FC<Entry> = ({ gid, pan_page1_url, aadhar_page1_url, aadh
                             cif_number: cif_number || '',
                         },
                         aadhar_json: {
-                            aadhar_number: "",
-                            name: '',
-                            relation: '',
-                            relation_name: '',
-                            dob: '',
-                            address: '',
-                            gender: "",
+                            aadhar_number: aadhar_json?.aadhar_number || "",
+                            name: aadhar_json?.name || '',
+                            relation: aadhar_json?.relation || '',
+                            relation_name: aadhar_json?.relation_name || '',
+                            dob: aadhar_json?.dob || '',
+                            address: aadhar_json?.address || '',
+                            gender: aadhar_json?.gender || '',
                         },
                         pan_josn: {
-                            pan_number: '',
-                            father_name: '',
-                            dob: '',
-                            name: ''
+                            pan_number: pan_josn.pan_number || '',
+                            father_name: pan_josn.father_name || '',
+                            dob: pan_josn.dob || '',
+                            name: pan_josn.name || '',
                         },
                     });
 
