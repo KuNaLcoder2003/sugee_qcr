@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }: Props) => {
     const [loading, setLoading] = useState<boolean>(false)
     const navigate = useNavigate()
     useEffect(() => {
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem('authtoken')
         if (token) {
             setIsLoggedIn(true)
         } else {
@@ -44,10 +44,7 @@ export const AuthProvider = ({ children }: Props) => {
     }, [])
 
     const login = async (cred: UserCred) => {
-        console.log('Clicked')
         try {
-            // login api
-            console.log(LOGIN_URL)
             const formData = new FormData()
             formData.append("Username", cred.email)
             formData.append("Password", cred.password)
@@ -59,7 +56,7 @@ export const AuthProvider = ({ children }: Props) => {
             console.log(data)
             if (data.token) {
                 navigate('/dashboard')
-                localStorage.setItem('token', `Bearer ${data.token}`)
+                localStorage.setItem('authtoken', `Bearer ${data.token}`)
                 setUserName("")
                 setLoading(false)
             } else {
