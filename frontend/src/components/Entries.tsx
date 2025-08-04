@@ -77,7 +77,7 @@ const Entries = () => {
             fetchEntries(storedBank, storedBranch);
             fetchBranchCustomers(storedBank, storedBranch)
         }
-    }, [entries.length === 0 , selectedBank.length == 0]);
+    }, [entries.length === 0, selectedBank.length == 0]);
     const loadBranches = async () => {
         setLoadingBanks(true);
         try {
@@ -229,74 +229,12 @@ const Entries = () => {
         fetchEntries(selectedBank, selectedBranch);
     };
     return (
+        
         <>
             {!bankCode ? (
                 loadingBanks ? (
                     <Loader />
                 ) : (
-                    // <div className="w-[95%] m-auto rounded-lg p-4 bg-gray-100 shadow-md">
-
-                    //     <form onSubmit={handleSubmit} className="w-full flex gap-4">
-                    //         <div className='flex items-center w-full gap-4'>
-                    //             <label htmlFor="bank-select" className="text-lg font-semibold text-gray-700">
-                    //                 Select Bank:
-                    //             </label>
-                    //             <select
-                    //                 id="bank-select"
-                    //                 className="w-[50%] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    //                 value={selectedBank}
-                    //                 onChange={(e) => {
-                    //                     setSelectedBank(e.target.value)
-                    //                     fetch_bank_branches(e.target.value)
-                    //                 }}
-                    //             >
-                    //                 <option value="">Select a Value</option>
-                    //                 {banks.map((bank) => (
-                    //                     <option className='w-full' key={bank.bank_code} value={bank.bank_code}>
-                    //                         {bank.bank_name}
-                    //                     </option>
-                    //                 ))}
-                    //             </select>
-                    //         </div>
-                    //         <div className='flex items-center gap-4 w-full'>
-                    //             <label htmlFor="branch-select" className="text-lg font-semibold text-gray-700">
-                    //                 Select Branch :
-                    //             </label>
-                    //             <select
-                    //                 id="branch-select"
-                    //                 className="w-[50%] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    //                 value={selectedBranch}
-                    //                 onChange={(e) => { setSelectedBarnch(e.target.value); fetchBranchCustomers(selectedBank, e.target.value) }}
-                    //             >
-                    //                 <option value="">Select a Value</option>
-                    //                 {branches.map((branch) => (
-                    //                     <option key={branch.branch_code} value={branch.branch_code}>
-                    //                         {branch.branch_code}
-                    //                     </option>
-                    //                 ))}
-                    //             </select>
-                    //         </div>
-
-                    //         {/* <label htmlFor="date-select" className="text-lg font-semibold text-gray-700">
-                    //             Select Date:
-                    //         </label>
-                    //         <input
-                    //             type="date"
-                    //             id="date-select"
-                    //             className="w-[20%] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    //             value={selectedDate}
-                    //             onChange={(e) => setSelectedDate(e.target.value)}
-                    //         /> */}
-
-                    //         <button
-                    //             type="submit"
-                    //             className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-900 transition-colors w-[20%]"
-                    //         >
-                    //             Get Entries
-
-                    //         </button>
-                    //     </form>
-                    // </div>
                     <div className="w-[95%] max-w-5xl mx-auto rounded-lg p-6 bg-gray-100 shadow-md">
                         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6 md:flex-row md:flex-wrap">
                             {/* Bank Selector */}
@@ -356,8 +294,6 @@ const Entries = () => {
                             </div>
                         </form>
                     </div>
-
-
                 )
             ) : loading ? <Loader /> : <>
                 {
@@ -366,30 +302,34 @@ const Entries = () => {
                     ) : (
                         <>
                             {
-                                loading ? <Loader /> : (
+                                loading || loadingCustomers ? <Loader /> : (
+
                                     <>
-                                        {
-                                            loadingCustomers ? <Loader /> : (
-                                                <div className="w-[100%] m-auto rounded-lg p-4 flex flex-col items-center gap-4">
-                                                    <div className='flex flex-row items-center w-full justify-between gap-6'>
-                                                        <div className='w-[80%]'>
-                                                            <DropdownSearch items={customers} />
-                                                        </div>
-                                                        <button className='w-[20%] p-2 text-lg font-bold text-white bg-red-500 rounded-lg m-auto cursor-pointer shadow-lg' onClick={() => {
+
+                                    
+
+                                        <div className="w-[100%] m-auto rounded-lg p-4 flex flex-col items-center gap-4">
+                                            <div className='flex flex-row items-center w-full justify-between gap-6'>
+                                                <div className='w-[80%] m-auto'>
+                                                    <DropdownSearch items={customers} />
+                                                </div>
+                                                <button className='w-[20%] p-2 text-lg font-bold text-white bg-red-500 rounded-lg m-auto cursor-pointer shadow-lg' onClick={() => {
                                                             sessionStorage.removeItem("branch")
                                                             sessionStorage.removeItem("bank")
                                                             setBankCode("")
                                                             setSelectedBank("")
-                                                        }}>Reset</button>
-                                                        
-                                                    </div>
+                                                        }}>Reset</button> 
 
-                                                    <Window setEntries={setEntries} branch_code=''  {...entryToEdit} />
+                                            </div>
 
-                                                </div>
-                                            )
-                                        }
+                                            <Window setEntries={setEntries} branch_code=''  {...entryToEdit} />
+
+                                        </div>
+
+
                                     </>
+
+
                                 )
                             }
                         </>
@@ -397,6 +337,8 @@ const Entries = () => {
                 }
             </>}
         </>
+    
+
     );
 };
 

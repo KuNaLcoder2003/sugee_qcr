@@ -292,9 +292,9 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                 <div className="flex flex-col gap-4 items-baseline">
                   {/* Aadhaar box */}
 
-                  <div className='space-y-4 w-full'>
+                  <div className='space-y-4 w-full mt-4'>
                     <div className='flex items-center justify-between'>
-                      <h3>Aadhaar Details</h3>
+                      <h3 className='text-xl font-bold'>Aadhaar Details</h3>
                       <button className='p-1 cursor-pointer flex items-center px-2 bg-green-700 text-white font-semibold rounded-lg' onClick={() => setBoxOpen("Aadhaar")}>See details</button>
                     </div>
                     {
@@ -458,7 +458,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                   {/* Pan Box */}
                   <div className='space-y-4 w-full'>
                     <div className='flex w-full items-center justify-between'>
-                      <h3>Pan Details</h3>
+                      <h3 className='text-xl font-bold'>Pan Details</h3>
                       <button className='p-1 cursor-pointer flex items-center px-2 bg-green-700 text-white font-semibold rounded-lg' onClick={() => setBoxOpen("Pan")}>See details</button>
                     </div>
                     {

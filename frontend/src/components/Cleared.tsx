@@ -195,21 +195,25 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { format } from 'date-fns' // ✅ Added for formatting date
-import type { KYCEntries, Edit, Branch } from '../types'
+import type { KYCEntries, Edit, Branch , Customer } from '../types'
 import EditWindow from './EditWindow'
 import Loader from './Loader'
 import EntryComp from './EntryComp'
+import DropdownSearch from './DropDownSearch'
 
 const FETCH_BANKS_URL = `${import.meta.env.VITE_FETCH_BANKS_URL}`
 const FETCH_OCR_KYC_ENTRIES_URL = `${import.meta.env.VITE_FETCH_Entries_URL}`
+const FTECH_Branch_Customers = `${import.meta.env.VITE_FETCH_CUSTOMERS}`
 
 const Cleared = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [loadingCustomers, setLoadingCustomers] = useState<boolean>(false)
+  const [customers, setCustomers] = useState<Customer[]>([])
   const [entries, setEntries] = useState<KYCEntries[]>([]);
-  const [branchCode, setBranchCode] = useState<string>(sessionStorage.getItem('bank') || '');
-  const [branches, setBranches] = useState<Branch[]>([]);
+  const [bank, setBankCode] = useState<string>(sessionStorage.getItem('bank') || '');
+  const [banks, setBanks] = useState<Branch[]>([]);
   const [loadingBanks, setLoadingBanks] = useState<boolean>(false);
-  const [selectedBranch, setSelectedBranch] = useState<string>('');
+  const [selectedBank, setSelectedBank] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false)
   const [selectedDate, setSelectedDate] = useState<string>(() => {
     const today = new Date();
@@ -261,7 +265,7 @@ const Cleared = () => {
       const res = await fetch(FETCH_BANKS_URL, { method: 'POST' });
       const data = await res.json();
       if (data.data) {
-        setBranches(data.data);
+        setBanks(data.data);
       } else {
         toast.error(data.message || 'Failed to fetch branches');
       }
@@ -290,7 +294,7 @@ const Cleared = () => {
       const data = await res.json();
       if (data.status == '1') {
         setEntries(data.data);
-        setBranchCode(bankCode);
+        setBankCode(bankCode);
         setEntryToEdit({
           aadhar_page1_url: data.data[0].aadhar_page1_url,
           aadhar_page2_url: data.data[0].aadhar_page2_url,
@@ -319,6 +323,30 @@ const Cleared = () => {
     }
   }
 
+  const fetchBranchCustomers = async (bankCode: string, branchCode: string) => {
+          console.log('Branch code is :', branchCode)
+          const n = new FormData()
+          n.append("bank_code", bankCode)
+          n.append("branch_code", branchCode)
+          setLoadingCustomers(true)
+          const r = await fetch(FTECH_Branch_Customers, {
+              method: 'POST',
+              body: n
+          })
+          const d = await r.json() as any
+          // console.log('kunal bhai : ', d)
+          console.log(d)
+          if (d.status == '1') {
+  
+              setCustomers(d.data)
+          } else {
+              toast.error('Error fetching customers')
+              return
+          }
+          setLoadingCustomers(false)
+  
+      }
+
   useEffect(() => {
     const storedBank = sessionStorage.getItem('bank');
     if (!storedBank) {
@@ -330,16 +358,16 @@ const Cleared = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedBranch || selectedBranch === "Select a branch") {
+    if (!selectedBank || selectedBank === "Select a branch") {
       toast.error("Please select a valid branch");
       return;
     }
-    fetchEntries(selectedBranch);
+    fetchEntries(selectedBank);
   };
 
   return (
     <>
-      {!branchCode ? (
+      {!bank ? (
         loadingBanks ? (
           <Loader />
         ) : (
@@ -351,13 +379,13 @@ const Cleared = () => {
               <select
                 id="branch-select"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                value={selectedBranch}
-                onChange={(e) => setSelectedBranch(e.target.value)}
+                value={selectedBank}
+                onChange={(e) => setSelectedBank(e.target.value)}
               >
                 <option value="">Select a Value</option>
-                {branches.map((branch) => (
-                  <option key={branch.bank_code} value={branch.bank_code}>
-                    {branch.bank_name}
+                {banks.map((bank) => (
+                  <option key={bank.bank_code} value={bank.bank_code}>
+                    {bank.bank_name}
                   </option>
                 ))}
               </select>
@@ -383,12 +411,24 @@ const Cleared = () => {
             </form>
           </div>
         )
-      ) : loading ? <Loader /> : <>
+      ) : loading || loadingCustomers ? <Loader /> : <>
         {
           entries.length === 0 ? (
             <div>No record to show</div>
           ) : (
             <div className="w-[95%] m-auto rounded-lg p-4">
+              <div className='flex flex-row items-center w-full justify-between gap-6'>
+                <div className='w-[80%]'>
+                  <DropdownSearch items={customers} />
+                </div>
+                <button className='w-[20%] p-2 text-lg font-bold text-white bg-red-500 rounded-lg m-auto cursor-pointer shadow-lg' onClick={() => {
+                  sessionStorage.removeItem("branch")
+                  sessionStorage.removeItem("bank")
+                  setBankCode("")
+                  setSelectedBank("")
+                }}>Reset</button>
+
+              </div>
               {
                 isModalOpen ? <div className='fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50'>
                   {entryToEdit && (
@@ -411,6 +451,7 @@ const Cleared = () => {
                   <p className='truncate'>Branch Code</p>
                   <p className='truncate'>Edit</p>
                 </div>
+
                 {entries.map((obj) => (
                   <EntryComp setIsModalOpen={setIsModalOpen} setEntryToEdit={setEntryToEdit} key={obj.gid} {...obj} user_json={entryToEdit?.user_json} />
                 ))}
