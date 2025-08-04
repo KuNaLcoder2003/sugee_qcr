@@ -195,20 +195,20 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { format } from 'date-fns' // ✅ Added for formatting date
-import type { KYCEntries, Edit, Branch , Customer } from '../types'
+import type { KYCEntries, Edit, Branch } from '../types'
 import EditWindow from './EditWindow'
 import Loader from './Loader'
 import EntryComp from './EntryComp'
-import DropdownSearch from './DropDownSearch'
+// import DropdownSearch from './DropDownSearch'
 
 const FETCH_BANKS_URL = `${import.meta.env.VITE_FETCH_BANKS_URL}`
 const FETCH_OCR_KYC_ENTRIES_URL = `${import.meta.env.VITE_FETCH_Entries_URL}`
-const FTECH_Branch_Customers = `${import.meta.env.VITE_FETCH_CUSTOMERS}`
+// const FTECH_Branch_Customers = `${import.meta.env.VITE_FETCH_CUSTOMERS}`
 
 const Cleared = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  const [loadingCustomers, setLoadingCustomers] = useState<boolean>(false)
-  const [customers, setCustomers] = useState<Customer[]>([])
+  // const [loadingCustomers, setLoadingCustomers] = useState<boolean>(false)
+  // const [customers, setCustomers] = useState<Customer[]>([])
   const [entries, setEntries] = useState<KYCEntries[]>([]);
   const [bank, setBankCode] = useState<string>(sessionStorage.getItem('bank') || '');
   const [banks, setBanks] = useState<Branch[]>([]);
@@ -323,29 +323,29 @@ const Cleared = () => {
     }
   }
 
-  const fetchBranchCustomers = async (bankCode: string, branchCode: string) => {
-          console.log('Branch code is :', branchCode)
-          const n = new FormData()
-          n.append("bank_code", bankCode)
-          n.append("branch_code", branchCode)
-          setLoadingCustomers(true)
-          const r = await fetch(FTECH_Branch_Customers, {
-              method: 'POST',
-              body: n
-          })
-          const d = await r.json() as any
-          // console.log('kunal bhai : ', d)
-          console.log(d)
-          if (d.status == '1') {
+  // const fetchBranchCustomers = async (bankCode: string, branchCode: string) => {
+  //         console.log('Branch code is :', branchCode)
+  //         const n = new FormData()
+  //         n.append("bank_code", bankCode)
+  //         n.append("branch_code", branchCode)
+  //         setLoadingCustomers(true)
+  //         const r = await fetch(FTECH_Branch_Customers, {
+  //             method: 'POST',
+  //             body: n
+  //         })
+  //         const d = await r.json() as any
+  //         // console.log('kunal bhai : ', d)
+  //         console.log(d)
+  //         if (d.status == '1') {
   
-              setCustomers(d.data)
-          } else {
-              toast.error('Error fetching customers')
-              return
-          }
-          setLoadingCustomers(false)
+  //             setCustomers(d.data)
+  //         } else {
+  //             toast.error('Error fetching customers')
+  //             return
+  //         }
+  //         setLoadingCustomers(false)
   
-      }
+  //     }
 
   useEffect(() => {
     const storedBank = sessionStorage.getItem('bank');
@@ -411,16 +411,16 @@ const Cleared = () => {
             </form>
           </div>
         )
-      ) : loading || loadingCustomers ? <Loader /> : <>
+      ) : loading  ? <Loader /> : <>
         {
           entries.length === 0 ? (
             <div>No record to show</div>
           ) : (
             <div className="w-[95%] m-auto rounded-lg p-4">
               <div className='flex flex-row items-center w-full justify-between gap-6'>
-                <div className='w-[80%]'>
+                {/* <div className='w-[80%]'>
                   <DropdownSearch items={customers} />
-                </div>
+                </div> */}
                 <button className='w-[20%] p-2 text-lg font-bold text-white bg-red-500 rounded-lg m-auto cursor-pointer shadow-lg' onClick={() => {
                   sessionStorage.removeItem("branch")
                   sessionStorage.removeItem("bank")
