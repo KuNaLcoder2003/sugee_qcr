@@ -57,7 +57,7 @@ const SideBar: React.FC<Prop> = ({ sideBarOpen, setSidebarOpen , setCurrentTab }
           <p
             key={index}
             onClick={() => {
-              if(index == 3) {
+              if(index == 2) {
                 logout()
               } else {
                 setActive(index)

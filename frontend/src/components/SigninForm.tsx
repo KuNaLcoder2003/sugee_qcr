@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useAuth } from '../context/authContext'
+import { Toaster } from 'react-hot-toast'
 
 interface Props {
     styles?: string
@@ -15,6 +16,7 @@ const SigninForm: React.FC<Props> = ({ }) => {
 
     return (
         <div className='w-[95%] lg:w-[80%]'>
+            <Toaster/>
             <form onSubmit={(e)=> {
                 e.preventDefault()
                 login({

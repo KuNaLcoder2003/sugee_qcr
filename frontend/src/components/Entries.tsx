@@ -238,7 +238,64 @@ return (
     <>
         {/* Always-visible Bank & Branch selectors */}
         <div className="w-[95%] max-w-5xl mx-auto rounded-lg p-6 bg-gray-100 shadow-md">
+            {/* <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6 md:flex-row md:flex-wrap">
+                  
+                    <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full md:w-[48%]">
+                        <label htmlFor="bank-select" className="text-lg font-semibold text-gray-700 min-w-[100px]">
+                            Select Bank:
+                        </label>
+                        <select
+                            id="bank-select"
+                            className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            value={selectedBank}
+                            onChange={(e) => {
+                                const bank = e.target.value;
+                                setSelectedBank(bank);
+                                fetchBankBranches(bank);
+                            }}
+                        >
+                            <option value="">Select a Value</option>
+                            {banks.map((bank) => (
+                                <option key={bank.bank_code} value={bank.bank_code}>
+                                    {bank.bank_name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
+                    
+                    <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full md:w-[48%]">
+                        <label htmlFor="branch-select" className="text-lg font-semibold text-gray-700 min-w-[100px]">
+                            Select Branch:
+                        </label>
+                        <select
+                            id="branch-select"
+                            className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            value={selectedBranch}
+                            onChange={(e) => {
+                                const branch = e.target.value;
+                                setSelectedBranch(branch);
+                            }}
+                        >
+                            <option value="">Select a Value</option>
+                            {branches.map((branch) => (
+                                <option key={branch.branch_code} value={branch.branch_code}>
+                                    {branch.branch_name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    
+                    <div className="w-full md:w-auto flex justify-end mt-2 md:mt-0">
+                        <button
+                            type="submit"
+                            className="w-full md:w-auto bg-green-700 text-white px-6 py-2 rounded-md hover:bg-green-900 transition-colors"
+                        >
+                            Get Entries
+                        </button>
+                    </div>
+                </form> */}
             <form onSubmit={handleSubmit} className="w-full flex flex-col lg:flex-row flex-wrap items-center justify-around gap-4">
                 {/* Bank Selector */}
                 <div className="flex items-center gap-2 w-full sm:w-[32%] min-w-[260px]">
@@ -264,54 +321,58 @@ return (
                     </select>
                 </div>
 
-                {/* Branch Selector */}
-                <div className="flex items-center gap-2 w-full sm:w-[32%] min-w-[260px]">
-                    <label htmlFor="branch-select" className="whitespace-nowrap text-sm font-medium text-gray-700">
-                        Select Branch:
-                    </label>
-                    <select
-                        id="branch-select"
-                        className="flex-1 h-9 px-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
-                        value={selectedBranch}
-                        onChange={(e) => setSelectedBranch(e.target.value)}
-                    >
-                        <option value="">Select</option>
-                        {branches.map((branch) => (
-                            <option key={branch.branch_code} value={branch.branch_code}>
-                                {branch.branch_name}
-                            </option>
-                        ))}
-                    </select>
+                        {/* Branch Selector */}
+                        <div className="flex flex-col">
+                            <label htmlFor="branch-select" className="text-xs font-medium text-gray-600 mb-1">
+                                Branch
+                            </label>
+                            <select
+                                id="branch-select"
+                                className="min-w-[180px] h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                value={selectedBranch}
+                                onChange={(e) => setSelectedBranch(e.target.value)}
+                            >
+                                <option value="">Choose Branch</option>
+                                {branches.map((branch) => (
+                                    <option key={branch.branch_code} value={branch.branch_code}>
+                                        {branch.branch_name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="flex items-end pt-5">
+                            <button
+                                type="submit"
+                                className="h-10 px-6 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-all"
+                            >
+                                Get Entries
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
-                {/* Submit Button */}
-                <div className="w-full sm:w-auto">
-                    <button
-                        type="submit"
-                        className="h-9 px-4 bg-green-700 text-white text-sm rounded hover:bg-green-900 transition-colors w-full sm:w-auto"
-                    >
-                        Get Entries
-                    </button>
-                </div>
-            </form>
 
-        </div>
 
-        {/* Main Content */}
-        {loading || loadingCustomers ? (
-            <Loader />
-        ) : entries.length === 0 ? (
-            <div className="text-center mt-10 text-gray-600">No record to show</div>
-        ) : (
-            <div className="w-full m-auto rounded-lg p-4 flex flex-col items-center gap-4">
-                <div className="w-full">
-                    <DropdownSearch items={customers} />
-                </div>
-                <Window setEntries={setEntries} branch_code={selectedBranch} {...entryToEdit} />
+
             </div>
-        )}
-    </>
-);
+
+            {/* Main Content */}
+            {loading || loadingCustomers ? (
+                <Loader />
+            ) : entries.length === 0 ? (
+                <div className="text-center mt-10 text-gray-600">No record to show</div>
+            ) : (
+                <div className="w-full m-auto rounded-lg p-4 flex flex-col items-center gap-4">
+                    <div className="w-full">
+                        <DropdownSearch items={customers} />
+                    </div>
+                    <Window setEntries={setEntries} branch_code={selectedBranch} {...entryToEdit} />
+                </div>
+            )}
+        </>
+    );
 };
 
 export default Entries;
