@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { LogOut, Settings, User, X , ClipboardClock  } from "lucide-react"
+import { LogOut, User, X , ClipboardClock  } from "lucide-react"
 import { useAuth } from '../context/authContext'
 
 type tabs = "Entries" | "Pending" | "Cleared"
@@ -18,14 +18,14 @@ const sidebarItems = [
   },
   {
     icon: <ClipboardClock />,
-    label: 'Collected Data',
+    label: 'Pending',
     name : 'Pending' as tabs,
   },
-  {
-    icon: <Settings />,
-    label: 'Cleared',
-    name : 'Cleared' as tabs
-  },
+  // {
+  //   icon: <Settings />,
+  //   label: 'Cleared',
+  //   name : 'Cleared' as tabs
+  // },
   {
     icon: <LogOut />,
     label: 'Logout',

@@ -599,13 +599,13 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                 </div>
 
                 <div className="flex justify-end space-x-3 pt-4">
-                  <button
+                  {/* <button
                     type="button"
                     onClick={() => handleClear("-3")}
                     className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-700 transition-colors"
                   >
                     Clear
-                  </button>
+                  </button> */}
                   <button
                     type="button"
                     onClick={() => handleClear("-2")}

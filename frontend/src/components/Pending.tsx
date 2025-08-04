@@ -78,11 +78,11 @@ const Pending = () => {
       setLoading(true);
       const formData = new FormData();
       formData.append("bank_code", bankCode);
-      formData.append("status", "0");
+      formData.append("status", "-2");
       formData.append("limit", "100");
-      const today = new Date();
-      const formattedDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
-      formData.append("fromDate", formattedDate);
+      // const today = new Date();
+      // const formattedDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+      // formData.append("fromDate", formattedDate);
 
       const res = await fetch(FETCH_OCR_KYC_ENTRIES_URL, {
         method: 'POST',
