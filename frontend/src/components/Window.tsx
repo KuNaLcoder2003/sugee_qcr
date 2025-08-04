@@ -1,9 +1,11 @@
 import { Loader, X } from 'lucide-react';
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState  } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import type { Aadhaar, Pan, User, USER_AADHAAR_PAN } from '../types'
 import { AnimatePresence, motion } from 'framer-motion';
+
+
 interface Props {
   gid: string;
   pan_page1_url: string;
@@ -99,7 +101,6 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     }),
   };
   useEffect(() => {
-    console.log(aadhar_page1_url, aadhar_page2_url, pan_page1_url, sign_url, selie_url)
     setLoading(true)
     setImages([{
       name: 'Aadhaar Card - 1',
@@ -132,8 +133,8 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     formData.append("customer_guid", customer_guid)
     formData.append("gid", gid)
     formData.append("bank_code", bank_code)
-    // formData.append("aadhar_json", editedValues.aadhar_no)
-    // formData.append("pan_json", editedValues.pan_no)
+    formData.append("aadhar_json", JSON.stringify(editedValues.aadhar_json))
+    formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
     formData.append("status", status)
     try {
       fetch('https://sugee.io/KYCServiceAPI/kycapi/updateOCRData', {
@@ -153,33 +154,32 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
   }
 
 
-  // const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = () => {
+  const formData = new FormData()
+  formData.append('bank_code', bank_code)
+  formData.append("customer_guid", customer_guid)
+  formData.append("gid", gid)
+  formData.append("aadhar_json", JSON.stringify(editedValues.aadhar_json))
+  formData.append('user_json' , JSON.stringify(editedValues.user_json))
+  formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
+  formData.append("status", "1")
 
-  // e.preventDefault()
-  // const formData = new FormData()
-  // formData.append('bank_code', bank_code)
-  // formData.append("customer_guid", customer_guid)
-  // formData.append("gid", gid)
-  // formData.append("aadhar_json", editedValues.aadhar_no)
-  // formData.append("pan_json", editedValues.pan_no)
-  // formData.append("status", "1")
-
-  //   try {
-  //     fetch('https://sugee.io/KYCServiceAPI/kycapi/updateOCRData', {
-  //       method: 'POST',
-  //       body: formData
-  //     }).then(async (res: Response) => {
-  //       const data = await res.json()
-  //       if (data.status == '1') {
-  //         // DO something
-  //         toast.success(data.message)
-  //         setEntries([])
-  //       }
-  //     })
-  //   } catch (error) {
-  //     toast.error(`${error}`)
-  //   }
-  // }
+    try {
+      fetch('https://sugee.io/KYCServiceAPI/kycapi/updateOCRData', {
+        method: 'POST',
+        body: formData
+      }).then(async (res: Response) => {
+        const data = await res.json()
+        if (data.status == '1') {
+          // DO something
+          toast.success(data.message)
+          setEntries([])
+        }
+      })
+    } catch (error) {
+      toast.error(`${error}`)
+    }
+  }
 
   return (
 
@@ -233,7 +233,6 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                 <p className='text-lg font-semibold'>CIF Number : <span className='font-normal'>{editedValues.user_json.cif_number}</span></p> */}
               </div>
             </div>
-
             <div className="flex flex-col items-center lg:flex-row gap-8 w-[90%]">
               {/* Image Slider */}
               <div className="flex flex-col items-center w-full lg:w-1/2">
@@ -616,7 +615,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                   </button>
                   <button
                     type="submit"
-                    onClick={() => { }}
+                    onClick={handleSubmit}
                     className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
                   >
                     Submit

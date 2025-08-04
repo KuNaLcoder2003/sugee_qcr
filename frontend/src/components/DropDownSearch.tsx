@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import type { Customer } from "../types";
 import { useDebounce } from "../hooks/useDebouce"; // adjust path as needed
+import { X } from "lucide-react";
 
 interface Props {
   items: Customer[];
@@ -25,20 +26,26 @@ const DropdownSearch: React.FC<Props> = ({ items }) => {
 
   return (
     <div className="relative w-full">
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => {
-          setSearchTerm(e.target.value);
-          setShowDropdown(true);
-        }}
-        onFocus={() => setShowDropdown(true)}
-        placeholder="Search by account number or CIF number..."
-        className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
+      <div className="w-full flex items-center gap-4">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setShowDropdown(true);
+          }}
+          onFocus={() => setShowDropdown(true)}
+          placeholder="Search by account number or CIF number..."
+          className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+
+        {
+          showDropdown ? <X className="cursor-pointer" onClick={() => setShowDropdown(false)} /> : null 
+        }
+      </div>
 
       {showDropdown && filteredItems.length > 0 && (
-        <ul className="absolute z-10 w-full bg-white border border-t-0 border-gray-300 rounded-b-md max-h-48 overflow-y-auto shadow-lg">
+        <ul className="absolute z-10 w-[95%] bg-white border border-t-0 border-gray-300 rounded-b-md max-h-48 overflow-y-auto shadow-lg">
           {filteredItems.map((item, index) => (
             <li
               key={index}

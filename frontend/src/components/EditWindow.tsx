@@ -144,35 +144,35 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     }
 
   }
-  // const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = () => {
 
-  //   e.preventDefault()
-  //   const formData = new FormData()
-  //   formData.append('bank_code', bank_code)
-  //   formData.append("customer_guid", customer_guid)
-  //   formData.append("gid", gid)
-  //   formData.append("aadhar_json",  editedValues.aadhar_no || '')
-  //   formData.append("pan_json", editedValues.pan_no ||'')
-  //   formData.append("status", "1")
+    // e.preventDefault()
+    const formData = new FormData()
+    formData.append('bank_code', bank_code)
+    formData.append("customer_guid", customer_guid)
+    formData.append("gid", gid)
+    formData.append("aadhar_json", JSON.stringify(editedValues.aadhar_json))
+    formData.append('user_json', JSON.stringify(editedValues.user_json))
+    formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
+    formData.append("status", "1")
 
-  //   try {
-  //     fetch(EDIT_OCR_DATA_URL, {
-  //       method: 'POST',
-  //       body: formData
-  //     }).then(async (res: Response) => {
-  //       const data = await res.json()
-  //       if (data.status == '1') {
-  //         // DO something
-  //         toast.success(data.message)
-  //         let filtered = entries.filter(obj => obj.customer_guid !== customer_guid)
-  //         setEntries(filtered)
-
-  //       }
-  //     })
-  //   } catch (error) {
-  //     toast.error(`${error}`)
-  //   }
-  // }
+    try {
+      fetch(EDIT_OCR_DATA_URL, {
+        method: 'POST',
+        body: formData
+      }).then(async (res: Response) => {
+        const data = await res.json()
+        if (data.status == '1') {
+          // DO something
+          toast.success(data.message)
+          let filtered = entries.filter(obj => obj.customer_guid !== customer_guid)
+          setEntries(filtered)
+        }
+      })
+    } catch (error) {
+      toast.error(`${error}`)
+    }
+  }
 
   return (
 
@@ -580,6 +580,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
               Mark as Pending
             </button>
             <button
+            onClick={handleSubmit}
               type="submit"
               className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
             >
