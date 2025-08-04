@@ -186,6 +186,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
               <p>Account Number : </p>
               <input
                 type="text"
+                required
                 placeholder={'Enter account number...'}
                 value={editedValues.user_json.account_number}
                 onChange={(e) =>
@@ -205,6 +206,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
             <div className='flex items-center gap-4'>
               <p>CIF Number : </p>
               <input
+                required
                 type="text"
                 placeholder={'Enter cif number...'}
                 value={editedValues.user_json.cif_number}
@@ -300,6 +302,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                               <div key={`${index}_${field.name}`} className='flex flex-col'>
                                 <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                 <input
+                                  required
                                   type="text"
                                   placeholder={field.placeholder}
                                   value={field.value}
@@ -334,6 +337,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                               <div key={`${index}_${field.name}`} className='flex flex-col'>
                                 <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                 <input
+                                  required
                                   type="text"
                                   placeholder={field.placeholder}
                                   value={field.value}
@@ -368,6 +372,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                               <div key={`${index}_${field.name}`} className='flex flex-col'>
                                 <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                 <input
+                                  required
                                   type="text"
                                   placeholder={field.placeholder}
                                   value={field.value}
@@ -397,6 +402,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                         <div key={index} className="space-y-2">
                           <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                           <textarea
+                            required
                             rows={5}
                             placeholder={field.placeholder}
                             value={field.value}
@@ -434,6 +440,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                 <div key={`${index}_${field.name}`} className='flex flex-col'>
                                   <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                   <input
+                                    required
                                     type="text"
                                     placeholder={field.placeholder}
                                     value={field.value}
@@ -465,6 +472,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                 <div key={`${index}_${field.name}`} className='flex flex-col'>
                                   <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                   <input
+                                    required
                                     type="text"
                                     placeholder={field.placeholder}
                                     value={field.value}
@@ -492,6 +500,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                 <div key={`${index}_${field.name}`} className='flex flex-col'>
                                   <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                   <input
+                                    required
                                     type="text"
                                     placeholder={field.placeholder}
                                     value={field.value}
@@ -523,6 +532,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                 <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
                                   <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                   <input
+                                    required
                                     type="text"
                                     placeholder={field.placeholder}
                                     value={field.value}

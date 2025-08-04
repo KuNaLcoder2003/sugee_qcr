@@ -308,6 +308,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                     <input
                                       type="text"
+                                      required
                                       placeholder={field.placeholder}
                                       value={field.value}
                                       onChange={(e) => {
@@ -341,6 +342,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                     <input
                                       type="text"
+                                      required
                                       placeholder={field.placeholder}
                                       value={field.value}
                                       onChange={(e) =>
@@ -367,33 +369,34 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                           <div className='w-full flex items-center gap-2'>
                             {
                               [
-                              { label: "Father's Name", placeholder: "Enter user's father's name...", value: editedValues.aadhar_json.relation_name, name: "relation_name" },].map((field, index) => {
-                                return (
-                                  <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
-                                    <label className="block text-sm font-medium text-gray-700">{field.label}</label>
-                                    <input
-                                      type="text"
-                                      placeholder={field.placeholder}
-                                      value={field.value}
-                                      onChange={(e) =>
-                                        setEditedValues({
-                                          ...editedValues,
-                                          user_json: {
-                                            ...editedValues.user_json,
-                                            ...(field.name === "name" && { name: e.target.value }),
-                                          },
-                                          aadhar_json: {
-                                            ...editedValues.aadhar_json,
-                                            [field.name]: e.target.value,
-                                          }
+                                { label: "Father's Name", placeholder: "Enter user's father's name...", value: editedValues.aadhar_json.relation_name, name: "relation_name" },].map((field, index) => {
+                                  return (
+                                    <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
+                                      <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+                                      <input
+                                        type="text"
+                                        required
+                                        placeholder={field.placeholder}
+                                        value={field.value}
+                                        onChange={(e) =>
+                                          setEditedValues({
+                                            ...editedValues,
+                                            user_json: {
+                                              ...editedValues.user_json,
+                                              ...(field.name === "name" && { name: e.target.value }),
+                                            },
+                                            aadhar_json: {
+                                              ...editedValues.aadhar_json,
+                                              [field.name]: e.target.value,
+                                            }
 
-                                        })
-                                      }
-                                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                    />
-                                  </div>
-                                )
-                              })
+                                          })
+                                        }
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                      />
+                                    </div>
+                                  )
+                                })
                             }
                           </div>
                           <div className='w-full flex items-center gap-2'>
@@ -406,6 +409,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                   <div key={`${index}_${field.name}`} className='flex flex-col'>
                                     <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                     <input
+                                      required
                                       type="text"
                                       placeholder={field.placeholder}
                                       value={field.value}
@@ -435,6 +439,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                             <div key={index} className="space-y-2">
                               <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                               <textarea
+                                required
                                 rows={5}
                                 placeholder={field.placeholder}
                                 value={field.value}
@@ -472,6 +477,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
                                       <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                       <input
+                                        required
                                         type="text"
                                         placeholder={field.placeholder}
                                         value={field.value}
@@ -503,6 +509,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
                                       <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                       <input
+                                        required
                                         type="text"
                                         placeholder={field.placeholder}
                                         value={field.value}
@@ -530,6 +537,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
                                       <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                       <input
+                                        required
                                         type="text"
                                         placeholder={field.placeholder}
                                         value={field.value}
@@ -561,6 +569,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
                                       <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                       <input
+                                        required
                                         type="text"
                                         placeholder={field.placeholder}
                                         value={field.value}
