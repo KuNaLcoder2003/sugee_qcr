@@ -339,7 +339,7 @@ const Entries = () => {
                                     <option value="">Select a Value</option>
                                     {branches.map((branch) => (
                                         <option key={branch.branch_code} value={branch.branch_code}>
-                                            {branch.branch_code}
+                                            {branch.branch_name}
                                         </option>
                                     ))}
                                 </select>
