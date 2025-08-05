@@ -2,19 +2,23 @@ import React, { useState } from 'react'
 import { LogOut, User, X , ClipboardClock  } from "lucide-react"
 import { useAuth } from '../context/authContext'
 
-type tabs = "Entries" | "Pending" | "Cleared"
+type tabs = "Entries" | "Pending" | "Cleared" | "User Management"
 
 interface Prop {
   sideBarOpen: boolean,
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  setCurrentTab : React.Dispatch<React.SetStateAction<tabs>>
+  setCurrentTab : React.Dispatch<React.SetStateAction<tabs>>,
+  isAdmin : boolean,
 }
 
-const sidebarItems = [
+
+const SideBar: React.FC<Prop> = ({ sideBarOpen, setSidebarOpen , setCurrentTab , isAdmin }) => {
+
+  const sidebarItems = [
   {
-    icon: <User />,
-    label: 'Dashboard',
-    name : 'Entries' as tabs,
+    icon: <User />  ,
+    label: isAdmin ? 'User Management' : 'Dashboard',
+    name : isAdmin ? "User Management" as tabs  :'Entries' as tabs,
   },
   {
     icon: <ClipboardClock />,
@@ -32,7 +36,6 @@ const sidebarItems = [
     name : '' as tabs
   },
 ]
-const SideBar: React.FC<Prop> = ({ sideBarOpen, setSidebarOpen , setCurrentTab }) => {
 
   const [active, setActive] = useState<number>(Number(sessionStorage.getItem('tabIndex')) || 0)
   const {logout} = useAuth()

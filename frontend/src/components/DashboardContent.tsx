@@ -1,33 +1,37 @@
-import React  from 'react'
+import React from 'react'
 import Header from './Header'
 import Entries from './Entries'
 import Pending from './Pending'
 import Cleared from './Cleared'
+import UserManagement from './UserManagement'
 
-type tabs = "Entries" | "Pending" | "Cleared"
+type tabs = "Entries" | "Pending" | "Cleared" | "User Management"
 
 interface Prop {
-    sidebarOpen : boolean, 
-    setSidebarOpen : React.Dispatch<React.SetStateAction<boolean>> , 
-    currentTab : tabs
+  sidebarOpen: boolean,
+  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  currentTab: tabs
 }
 
 interface TabProp {
-  tab : tabs
+  tab: tabs
 }
 
-const Element : React.FC<TabProp> = ({tab})=> {
-  if(tab == "Entries" ) {
-    return <Entries/>
-  } else if (tab == "Cleared" ) {
-    return <Cleared/>
-  } else if (tab == "Pending" ) {
-    return <Pending/>
+const Element: React.FC<TabProp> = ({ tab }) => {
+  if (tab == "Entries") {
+    return <Entries />
+  } else if (tab == "User Management") {
+    return <UserManagement />
+  }
+  else if (tab == "Cleared") {
+    return <Cleared />
+  } else if (tab == "Pending") {
+    return <Pending />
   } else {
     return null
   }
 }
-const DashboardContent : React.FC<Prop> = ({sidebarOpen , setSidebarOpen , currentTab}) => {
+const DashboardContent: React.FC<Prop> = ({ sidebarOpen, setSidebarOpen, currentTab }) => {
 
   return (
     <div className="w-full h-full">
