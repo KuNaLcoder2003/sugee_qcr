@@ -62,9 +62,11 @@ const Entries = () => {
 
     const [loadingBanks, setLoadingBanks] = useState(false);
     const [loadingCustomers, setLoadingCustomers] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
+    const [isBranchChange, setIsBranchChange] = useState<boolean>(sessionStorage.getItem('isCahnge') ? true : false);
 
     useEffect(() => {
+        const storedCheck = sessionStorage.getItem('isCahnge');
         const storedBank = sessionStorage.getItem('bank') || '';
         const storedBranch = sessionStorage.getItem('branch') || '';
 
@@ -77,13 +79,20 @@ const Entries = () => {
         if (storedBank && branches.length === 0) {
             fetchBankBranches(storedBank);
         }
+        if(storedBank && storedBranch && sessionStorage.getItem('isCahnge') === 'true') {
+            console.log('Fetching customers due to branch change , kunal');
+            
+        }
 
         // If entries not loaded but bank and branch exist, fetch entries
         if (storedBank && storedBranch && entries.length === 0) {
             setSelectedBank(storedBank);
             setSelectedBranch(storedBranch);
             fetchEntries(storedBank, storedBranch);
-            fetchBranchCustomers(storedBank, storedBranch);
+            if (storedCheck === 'true') {
+                console.log('Check hai idhar');
+                // fetchBranchCustomers(storedBank, storedBranch);
+            }
         }
     }, []);
 
@@ -105,6 +114,7 @@ const Entries = () => {
     };
 
     const fetchBranchCustomers = async (bankCode: string, branchCode: string) => {
+
         const form = new FormData();
         form.append('bank_code', bankCode);
         form.append('branch_code', branchCode);
@@ -118,6 +128,7 @@ const Entries = () => {
             const data = await res.json();
             if (data.status === '1') {
                 setCustomers(data.data);
+                sessionStorage.setItem('isCahnge', 'false');
             } else {
                 toast.error('Error fetching customers');
             }
@@ -154,6 +165,8 @@ const Entries = () => {
             formData.append('bank_code', bankCode);
             formData.append('status', '0');
             formData.append('limit', '1');
+            console.log('Fetching entries for bank:', bankCode, 'branch:', branchCode);
+            formData.append('branch_code', branchCode); 
 
 
             const res = await fetch(FETCH_OCR_KYC_ENTRIES_URL, {
@@ -196,7 +209,7 @@ const Entries = () => {
 
                 sessionStorage.setItem('bank', bankCode);
                 sessionStorage.setItem('branch', branchCode);
-                fetchBranchCustomers(bankCode, branchCode);
+                
             } else {
                 toast.error(data.message || 'No entries found');
             }
@@ -226,9 +239,12 @@ const Entries = () => {
 
         fetchEntries(selectedBank, selectedBranch);
 
-        if (lastFetchedBranch.current !== selectedBranch) {
+        if (sessionStorage.getItem('isCahnge') === 'true') {
+            console.log('true hai ');
+
             fetchBranchCustomers(selectedBank, selectedBranch);
-            lastFetchedBranch.current = selectedBranch; // update the ref
+        } else {
+            console.log(' false hai ');
         }
     };
 
@@ -273,7 +289,7 @@ const Entries = () => {
                                 id="branch-select"
                                 className="min-w-[180px] h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                                 value={selectedBranch}
-                                onChange={(e) => setSelectedBranch(e.target.value)}
+                                onChange={(e) => { setSelectedBranch(e.target.value); setIsBranchChange(true); sessionStorage.setItem('isCahnge', 'true'); }}
                             >
                                 <option value="">Choose Branch</option>
                                 {branches.map((branch) => (

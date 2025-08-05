@@ -1,9 +1,10 @@
-import { Loader, X } from 'lucide-react';
+import { AArrowDownIcon, ArrowDown, ChevronDown, ChevronUp, Loader, X } from 'lucide-react';
 import type React from 'react';
-import { useEffect, useState  } from 'react';
+import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import type { Aadhaar, Pan, User, USER_AADHAAR_PAN } from '../types'
 import { AnimatePresence, motion } from 'framer-motion';
+import ImageModal from './ImageModal';
 
 
 interface Props {
@@ -75,6 +76,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [enlargedImage, setEnlargedImage] = useState<number>(-1);
+
 
   const handlePrevious = () => {
     setDirection(-1);
@@ -155,14 +157,14 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
 
 
   const handleSubmit = () => {
-  const formData = new FormData()
-  formData.append('bank_code', bank_code)
-  formData.append("customer_guid", customer_guid)
-  formData.append("gid", gid)
-  formData.append("aadhar_json", JSON.stringify(editedValues.aadhar_json))
-  formData.append('user_json' , JSON.stringify(editedValues.user_json))
-  formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
-  formData.append("status", "1")
+    const formData = new FormData()
+    formData.append('bank_code', bank_code)
+    formData.append("customer_guid", customer_guid)
+    formData.append("gid", gid)
+    formData.append("aadhar_json", JSON.stringify(editedValues.aadhar_json))
+    formData.append('user_json', JSON.stringify(editedValues.user_json))
+    formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
+    formData.append("status", "1")
 
     try {
       fetch('https://sugee.io/KYCServiceAPI/kycapi/updateOCRData', {
@@ -188,14 +190,18 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
       {
         loading ? <Loader /> : (
           <div className="bg-white m-auto rounded-lg shadow-xl w-[90%] max-h-auto overflow-y-auto p-6">
-            <div className='w-full flex items-center justify-between p-1'>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">KYC Details</h2>
-              <div className='flex items-center gap-6'>
-                <div className='flex items-center gap-4'>
-                  <p>Account Number : </p>
+            <div className="w-full flex flex-col flex-wrap md:flex-row items-center justify-between p-2 gap-4 mb-2">
+              <h2 className="text-2xl font-bold text-gray-900 text-center md:text-left">
+                KYC Details
+              </h2>
+
+              <div className="flex flex-col m-auto flex-wrap overflow-x-hidden sm:flex-row items-center gap-4 w-full md:w-auto">
+                {/* Account Number */}
+                <div className="flex flex-col lg:flex-row items-center gap-2 w-full sm:w-auto">
+                  <p className="whitespace-nowrap">Account Number :</p>
                   <input
                     type="text"
-                    placeholder={'Enter account number...'}
+                    placeholder="Enter account number..."
                     value={editedValues.user_json.account_number}
                     onChange={(e) =>
                       setEditedValues({
@@ -204,18 +210,18 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                           ...editedValues.user_json,
                           account_number: e.target.value
                         },
-
-
                       })
                     }
-                    className="max-w-[80%] px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="w-full sm:w-48 md:w-56 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                <div className='flex items-center gap-4'>
-                  <p>CIF Number : </p>
+
+                {/* CIF Number */}
+                <div className="flex flex-col lg:flex-row items-center gap-2 w-full sm:w-auto">
+                  <p className="whitespace-nowrap">CIF Number : &nbsp; &nbsp; &nbsp; &nbsp; </p>
                   <input
                     type="text"
-                    placeholder={'Enter cif number...'}
+                    placeholder="Enter CIF number..."
                     value={editedValues.user_json.cif_number}
                     onChange={(e) =>
                       setEditedValues({
@@ -226,14 +232,14 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                         },
                       })
                     }
-                    className="max-w-[80%] px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="w-full sm:w-48 md:w-56 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                {/* <p className='text-lg font-semibold'>Account Number : <span className='font-normal'>{editedValues.user_json.account_number}</span></p>
-                <p className='text-lg font-semibold'>CIF Number : <span className='font-normal'>{editedValues.user_json.cif_number}</span></p> */}
               </div>
             </div>
-            <div className="flex flex-col items-center lg:flex-row gap-8 w-[90%]">
+
+
+            <div className="flex flex-col items-center m-auto lg:flex-row gap-8 w-[90%]">
               {/* Image Slider */}
               <div className="flex flex-col items-center w-full lg:w-1/2">
                 <div className="flex items-center justify-center gap-4 w-full">
@@ -275,15 +281,12 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                 </div>
 
                 {/* Enlarged Image */}
-                {enlargedImage >= 0 && (
-                  <div className="w-[400px] mt-4 relative">
-                    <div className="flex justify-between items-center mb-2">
-                      <p className="text-sm font-medium">{images[enlargedImage].name}</p>
-                      <X className="cursor-pointer" onClick={() => setEnlargedImage(-1)} />
-                    </div>
-                    <img src={images[enlargedImage].src} className="w-full rounded-lg shadow" />
-                  </div>
-                )}
+                {enlargedImage >= 0 && 
+                  <ImageModal
+                    imageUrl={images[enlargedImage].src}
+                    image_name={images[enlargedImage].name}
+                    setIsMoadlOpen={setEnlargedImage}/>
+                }
               </div>
 
               {/* Form Inputs */}
@@ -291,10 +294,12 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                 <div className="flex flex-col gap-4 items-baseline">
                   {/* Aadhaar box */}
 
-                  <div className='space-y-4 w-full mt-4'>
+                  <div className='space-y-4 w-full mt-4 p-1 border border-gray-300 rounded-md shadow-sm'>
                     <div className='flex items-center justify-between'>
                       <h3 className='text-xl font-bold'>Aadhaar Details</h3>
-                      <button className='p-1 cursor-pointer flex items-center px-2 bg-green-700 text-white font-semibold rounded-lg' onClick={() => setBoxOpen("Aadhaar")}>See details</button>
+                      {
+                        (boxOpen == "Aadhaar") ? <ChevronUp className='cursor-pointer' onClick={() => setBoxOpen("Pan")} /> : <ChevronDown className='cursor-pointer' onClick={() => setBoxOpen("Aadhaar")} />
+                      }
                     </div>
                     {
                       boxOpen == "Aadhaar" && (
@@ -460,10 +465,12 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                     }
                   </div>
                   {/* Pan Box */}
-                  <div className='space-y-4 w-full'>
+                  <div className='space-y-4 w-full mt-4 p-1 border border-gray-300 rounded-md shadow-sm'>
                     <div className='flex w-full items-center justify-between'>
                       <h3 className='text-xl font-bold'>Pan Details</h3>
-                      <button className='p-1 cursor-pointer flex items-center px-2 bg-green-700 text-white font-semibold rounded-lg' onClick={() => setBoxOpen("Pan")}>See details</button>
+                      {
+                        (boxOpen == "Pan") ? <ChevronUp className='cursor-pointer' onClick={() => setBoxOpen("Aadhaar")} /> : <ChevronDown className='cursor-pointer' onClick={() => setBoxOpen("Pan")} />
+                      }
                     </div>
                     {
                       boxOpen == "Pan" && (
