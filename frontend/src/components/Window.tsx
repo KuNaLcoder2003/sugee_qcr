@@ -1,4 +1,4 @@
-import { AArrowDownIcon, ArrowDown, ChevronDown, ChevronUp, Loader, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Loader } from 'lucide-react';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
@@ -63,15 +63,6 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
       father_name: pan_josn.father_name,
       dob: pan_josn.dob
     }
-    // aadhar_no: .aadhar_no,
-    // father_name: user_json.father_name || "",
-    // pan_no: user_json.pan_no,
-    // address: user_json.address,
-    // name: user_json.name,
-    // dob: user_json.dob,
-    // gender: user_json.gender,
-    // cif_number: cif_number,
-    // account_number: account_number
   })
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);

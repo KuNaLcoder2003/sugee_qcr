@@ -15,8 +15,8 @@ const DropdownSearch: React.FC<Props> = ({ items }) => {
 
   const filteredItems = items.filter(
     (item) =>
-      item.account_number.includes(debouncedWord) ||
-      item.cif_number.includes(debouncedWord)
+      item.account_number.startsWith(debouncedWord) ||
+      item.cif_number.startsWith(debouncedWord)
   );
 
   const handleSelect = (item: Customer) => {

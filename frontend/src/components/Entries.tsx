@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import Loader from './Loader';
 import { type KYCEntries, type Edit, type Branch, type Customer } from '../types';
@@ -12,7 +12,7 @@ const FETCH_BRANCH_CUSTOMERS = `${import.meta.env.VITE_FETCH_CUSTOMERS}`;
 const FETCH_BRANCHES = `${import.meta.env.VITE_GET_BANK_BRANCHES}`;
 
 const Entries = () => {
-    const lastFetchedBranch = useRef<string>('');
+    // const lastFetchedBranch = useRef<string>('');
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [entries, setEntries] = useState<KYCEntries[]>([]);
     const [banks, setBanks] = useState<Branch[]>([]);
@@ -91,6 +91,7 @@ const Entries = () => {
             fetchEntries(storedBank, storedBranch);
             if (storedCheck === 'true') {
                 console.log('Check hai idhar');
+                console.log(isBranchChange)
                 // fetchBranchCustomers(storedBank, storedBranch);
             }
         }
