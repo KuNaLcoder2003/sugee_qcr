@@ -128,12 +128,12 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     // formData.append("aadhar_json", editedValues.aadhar_no)
     // formData.append("pan_json", editedValues.pan_no)
     formData.append("status", status)
-     const token = localStorage.getItem('authtoken'); // this could return null or a string
+    const token = localStorage.getItem('authtoken'); // this could return null or a string
 
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': token })
-      };
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': token })
+    };
     try {
       fetch(EDIT_OCR_DATA_URL, {
         method: 'POST',
@@ -163,12 +163,12 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     formData.append('user_json', JSON.stringify(editedValues.user_json))
     formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
     formData.append("status", "1")
-     const token = localStorage.getItem('authtoken'); // this could return null or a string
+    const token = localStorage.getItem('authtoken'); // this could return null or a string
 
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': token })
-      };
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': token })
+    };
     try {
       fetch(EDIT_OCR_DATA_URL, {
         method: 'POST',
@@ -344,7 +344,7 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                       <div className='w-full flex items-center gap-2'>
                         {
                           [{ label: "Name", placeholder: "Enter user's name...", value: editedValues.aadhar_json.name, name: "name" },
-                          { label: "Father's Name", placeholder: "Enter user's father's name...", value: editedValues.aadhar_json.relation_name, name: "relation_name" },].map((field, index) => {
+                          ].map((field, index) => {
                             return (
                               <div key={`${index}_${field.name}`} className='flex flex-col'>
                                 <label className="block text-sm font-medium text-gray-700">{field.label}</label>
@@ -377,34 +377,199 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                       <div className='w-full flex items-center gap-2'>
                         {
                           [
-                            { label: "Gender", placeholder: "Enter user's gender", value: editedValues.aadhar_json.gender, name: "gender" },
-                            { label: "DOB", placeholder: "Enter user's dob", value: editedValues.aadhar_json.dob, name: "dob" }
+                            {
+                              label: "relation",
+                              placeholder: "Select relation...",
+                              value: editedValues.aadhar_json.relation,
+                              name: "relation",
+                              options: ["Father", "Wife", "Care Of"],
+                            }
                           ].map((field, index) => {
                             return (
-                              <div key={`${index}_${field.name}`} className='flex flex-col'>
+                              <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
                                 <label className="block text-sm font-medium text-gray-700">{field.label}</label>
-                                <input
+                                <select
                                   required
-                                  type="text"
-                                  placeholder={field.placeholder}
                                   value={field.value}
                                   onChange={(e) =>
                                     setEditedValues({
                                       ...editedValues,
-                                      user_json: {
-                                        ...editedValues.user_json,
-                                        [field.name]: e.target.value
-                                      },
                                       aadhar_json: {
                                         ...editedValues.aadhar_json,
                                         [field.name]: e.target.value,
                                       }
                                     })
                                   }
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                />
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                >
+                                  <option value="" disabled>{field.placeholder}</option>
+                                  {field.options.map((opt) => (
+                                    <option key={opt} value={opt}>
+                                      {opt}
+                                    </option>
+                                  ))}
+                                </select>
                               </div>
-                            )
+                            );
+                          })
+                        }
+                      </div>
+                      <div className='w-full flex items-center gap-2'>
+                        {
+                          [
+                            { label: "Relation Name", placeholder: "Enter relation's name...", value: editedValues.aadhar_json.relation_name, name: "relation_name" },].map((field, index) => {
+                              return (
+                                <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
+                                  <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+                                  <input
+                                    type="text"
+                                    required
+                                    placeholder={field.placeholder}
+                                    value={field.value}
+                                    onChange={(e) =>
+                                      setEditedValues({
+                                        ...editedValues,
+                                        // user_json: {
+                                        //   ...editedValues.user_json,
+                                        //   ...(field.name === "name" && { name: e.target.value }),
+                                        // },
+                                        aadhar_json: {
+                                          ...editedValues.aadhar_json,
+                                          [field.name]: e.target.value,
+                                        }
+
+                                      })
+                                    }
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                  />
+                                </div>
+                              )
+                            })
+                        }
+                      </div>
+                      <div className='w-full flex items-center gap-6'>
+                        {
+                          [
+                            {
+                              label: "Gender & DOB",
+                              placeholder: "Select user's gender",
+                              value: editedValues.aadhar_json.gender,
+                              name: "gender",
+                              type: "gender"
+                            },
+                            {
+                              label: "DOB",
+                              name: "dob",
+                              type: "dob"
+                            }
+                          ].map((field, index) => {
+                            if (field.type === "dob") {
+                              // Extract and manage DOB values
+                              const [year, month, day] = (editedValues.aadhar_json.dob?.split("-") || ["", "", ""]);
+
+                              const currentYear = new Date().getFullYear();
+                              const years = Array.from({ length: 100 }, (_, i) => `${currentYear - i}`);
+                              const months = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"));
+                              const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
+
+                              const handleDobChange = (newVal: string, part: "year" | "month" | "day") => {
+                                const newYear = part === "year" ? newVal : year;
+                                const newMonth = part === "month" ? newVal : month;
+                                const newDay = part === "day" ? newVal : day;
+
+                                // Only update if all are selected, else keep partial
+                                const dobString = `${newYear}-${newMonth}-${newDay}`;
+                                setEditedValues(prev => ({
+                                  ...prev,
+                                  aadhar_json: {
+                                    ...prev.aadhar_json,
+                                    dob: dobString
+                                  }
+                                }));
+                              };
+
+                              return (
+                                <div key={field.name} className='flex flex-col'>
+                                  {/* <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label> */}
+                                  <div className="flex gap-4">
+                                    {/* Year */}
+                                    <div className="flex flex-col">
+                                      <label htmlFor="dob-year" className="text-xs text-gray-500 mb-1">Year</label>
+                                      <select
+                                        id="dob-year"
+                                        value={year}
+                                        onChange={(e) => handleDobChange(e.target.value, "year")}
+                                        className="px-2 py-1 border border-gray-300 rounded-md"
+                                      >
+                                        <option value="">YYYY</option>
+                                        {years.map(y => <option key={y} value={y}>{y}</option>)}
+                                      </select>
+                                    </div>
+
+                                    {/* Month */}
+                                    <div className="flex flex-col">
+                                      <label htmlFor="dob-month" className="text-xs text-gray-500 mb-1">Month</label>
+                                      <select
+                                        id="dob-month"
+                                        value={month}
+                                        onChange={(e) => handleDobChange(e.target.value, "month")}
+                                        className="px-2 py-1 border border-gray-300 rounded-md"
+                                      >
+                                        <option value="">MM</option>
+                                        {months.map(m => <option key={m} value={m}>{m}</option>)}
+                                      </select>
+                                    </div>
+
+                                    {/* Day */}
+                                    <div className="flex flex-col">
+                                      <label htmlFor="dob-day" className="text-xs text-gray-500 mb-1">Day</label>
+                                      <select
+                                        id="dob-day"
+                                        value={day}
+                                        onChange={(e) => handleDobChange(e.target.value, "day")}
+                                        className="px-2 py-1 border border-gray-300 rounded-md"
+                                      >
+                                        <option value="">DD</option>
+                                        {days.map(d => <option key={d} value={d}>{d}</option>)}
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            }
+
+                            if (field.type === "gender") {
+                              return (
+                                <div key={`${index}_${field.name}`} className='flex flex-col'>
+                                  <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>
+                                  <select
+                                    required
+                                    value={field.value}
+                                    onChange={(e) =>
+                                      setEditedValues(prev => ({
+                                        ...prev,
+                                        user_json: {
+                                          ...prev.user_json,
+                                          [field.name]: e.target.value
+                                        },
+                                        aadhar_json: {
+                                          ...prev.aadhar_json,
+                                          [field.name]: e.target.value
+                                        }
+                                      }))
+                                    }
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                  >
+                                    <option value="">Select Gender</option>
+                                    <option value="MALE">MALE</option>
+                                    <option value="FEMALE">FEMALE</option>
+                                    <option value="OTHER">OTHER</option>
+                                  </select>
+                                </div>
+                              );
+                            }
+
+                            return null;
                           })
                         }
                       </div>
@@ -538,37 +703,100 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                             })
                         }
                       </div>
-                      <div className='w-full flex items-center gap-2'>
-                        {
-                          [
-                            { label: "DOB", placeholder: "Enter user dob...", value: editedValues.pan_josn.dob, name: "dob" },].map((field, index) => {
-                              return (
-                                <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
-                                  <label className="block text-sm font-medium text-gray-700">{field.label}</label>
-                                  <input
-                                    required
-                                    type="text"
-                                    placeholder={field.placeholder}
-                                    value={field.value}
-                                    onChange={(e) =>
-                                      setEditedValues({
-                                        ...editedValues,
-                                        user_json: {
-                                          ...editedValues.user_json,
-                                          father_name: e.target.value
-                                        },
-                                        pan_josn: {
-                                          ...editedValues.pan_josn,
-                                          [field.name]: e.target.value,
-                                        }
-                                      })
-                                    }
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                  />
+                      <div className="w-full flex items-center gap-2">
+                        {[
+                          {
+                            label: "DOB",
+                            name: "dob"
+                          }
+                        ].map((field, index) => {
+                          // Extract parts from editedValues.pan_josn.dob
+                          const dobParts = editedValues.pan_josn.dob?.split("-") || ["", "", ""];
+                          const [month, day, year] = dobParts;
+
+                          // Generate options
+                          const currentYear = new Date().getFullYear();
+                          const years = Array.from({ length: 100 }, (_, i) => `${currentYear - i}`);
+                          const months = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"));
+                          const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
+
+                          const handleDobChange = (value: string, part: "year" | "month" | "day") => {
+                            const updated = {
+                              year: part === "year" ? value : year,
+                              month: part === "month" ? value : month,
+                              day: part === "day" ? value : day
+                            };
+
+                            const formattedDob = `${updated.month}-${updated.day}-${updated.year}`;
+
+                            setEditedValues({
+                              ...editedValues,
+                              user_json: {
+                                ...editedValues.user_json,
+                                dob: formattedDob
+                              },
+                              pan_josn: {
+                                ...editedValues.pan_josn,
+                                dob: formattedDob
+                              }
+                            });
+                          };
+
+                          return (
+                            <div key={`${index}_${field.name}`} className="flex flex-col w-full">
+                              <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+                              <div className="flex gap-4 mt-1">
+                                {/* Year */}
+                                <div className="flex flex-col">
+                                  <label className="text-xs text-gray-500 mb-1" htmlFor="dob-year">Year</label>
+                                  <select
+                                    id="dob-year"
+                                    value={year}
+                                    onChange={(e) => handleDobChange(e.target.value, "year")}
+                                    className="px-2 py-1 border border-gray-300 rounded-md"
+                                  >
+                                    <option value="">YYYY</option>
+                                    {years.map((y) => (
+                                      <option key={y} value={y}>{y}</option>
+                                    ))}
+                                  </select>
                                 </div>
-                              )
-                            })
-                        }
+
+                                {/* Month */}
+                                <div className="flex flex-col">
+                                  <label className="text-xs text-gray-500 mb-1" htmlFor="dob-month">Month</label>
+                                  <select
+                                    id="dob-month"
+                                    value={month}
+                                    onChange={(e) => handleDobChange(e.target.value, "month")}
+                                    className="px-2 py-1 border border-gray-300 rounded-md"
+                                  >
+                                    <option value="">MM</option>
+                                    {months.map((m) => (
+                                      <option key={m} value={m}>{m}</option>
+                                    ))}
+                                  </select>
+                                </div>
+
+                                {/* Day */}
+                                <div className="flex flex-col">
+                                  <label className="text-xs text-gray-500 mb-1" htmlFor="dob-day">Day</label>
+                                  <select
+                                    id="dob-day"
+                                    value={day}
+                                    onChange={(e) => handleDobChange(e.target.value, "day")}
+                                    className="px-2 py-1 border border-gray-300 rounded-md"
+                                  >
+                                    <option value="">DD</option>
+                                    {days.map((d) => (
+                                      <option key={d} value={d}>{d}</option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </>
                   )
