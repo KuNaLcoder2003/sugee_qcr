@@ -95,7 +95,7 @@ const Entries = () => {
                 // fetchBranchCustomers(storedBank, storedBranch);
             }
         }
-    }, []);
+    }, [entries]);
 
     const loadBanks = async () => {
         setLoadingBanks(true);

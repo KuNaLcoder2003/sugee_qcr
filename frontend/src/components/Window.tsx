@@ -150,8 +150,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
 
   const handleClear = (status: string) => {
     const formData = new FormData()
-
-    formData.append('user_json', JSON.stringify(editedValues.user_json))
+    formData.append('user_json', JSON.stringify(editedValues))
     formData.append("customer_guid", customer_guid)
     formData.append("gid", gid)
     formData.append("bank_code", bank_code)
