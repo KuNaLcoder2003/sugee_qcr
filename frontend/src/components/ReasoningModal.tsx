@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 type ReasoningModalProps = {
   isOpen: boolean;
   title?: string;
+  reason : string,
+  setReason : React.Dispatch<React.SetStateAction<string>>
   setIsReasonOpen : React.Dispatch<React.SetStateAction<boolean>>
   actionText?: string;
 };
@@ -11,14 +13,11 @@ const ReasoningModal: React.FC<ReasoningModalProps> = ({
   isOpen,
   title = 'Provide a Reason',
   setIsReasonOpen,
+  reason,
+  setReason,
   actionText = 'Confirm'
 }) => {
-  const [reason, setReason] = useState<string>('');
-
   
-
-  
-
   if (!isOpen) return null;
 
   return (

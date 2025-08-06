@@ -6,8 +6,6 @@ import type { Aadhaar, Pan, User, USER_AADHAAR_PAN } from '../types'
 import { AnimatePresence, motion } from 'framer-motion';
 import ImageModal from './ImageModal';
 
-
-
 interface Props {
   gid: string;
   pan_page1_url: string;
@@ -41,8 +39,50 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
   bank_code, aadhar_page1_url, aadhar_page2_url, selie_url, sign_url, user_json, aadhar_json, pan_josn, cif_number, account_number, setEntries }) => {
 
   const [images, setImages] = useState<image[]>([])
+  const [imageStatuses, setImageStatuses] = useState<ImageStatus[]>(
+    images.map(() => ({ status: '', reason: '', key: '' }))
+  );
+  const [showReasonPopup, setShowReasonPopup] = useState(false);
+  const [remarks, setRemarks] = useState<any[]>([])
+  const handleCheckboxChange = (status: string) => {
+    const updatedStatuses = [...imageStatuses];
+    updatedStatuses[currentIndex].status = status;
+
+    if (status === 'not_ok') {
+      const formData = new FormData()
+      formData.append('bank_code', bank_code)
+      fetch('https://sugee.io/KYCServiceAPI/kycapi/getQCRemarks', {
+        method: 'POST',
+        body: formData
+      }).then(async (response: Response) => {
+        const data = await response.json()
+        if (data.status == '1') {
+          setRemarks(data.data)
+        } else {
+          setRemarks([])
+        }
+      })
+      setShowReasonPopup(true);
+    } else {
+      updatedStatuses[currentIndex].reason = '';
+    }
+
+    setImageStatuses(updatedStatuses);
+  };
+  useEffect(() => {
+    if (images.length > 0) {
+      setImageStatuses(images.map((img) => ({ status: '', reason: '', key: img.name })));
+    } 
+  }, [images])
+
+  const handleReasonSubmit = (reason: any) => {
+    const updatedStatuses = [...imageStatuses];
+    updatedStatuses[currentIndex].reason = reason;
+    setImageStatuses(updatedStatuses);
+    setShowReasonPopup(false);
+  };
   // const [reason, setReason] = useState<string>('');
-  const [isReasonOpen, setIsReasonOpen] = useState<boolean>(false)
+  // const [isReasonOpen, setIsReasonOpen] = useState<boolean>(false)
   const [relations, setRelations] = useState<Relation[]>([])
   const [boxOpen, setBoxOpen] = useState<"Aadhaar" | "Pan">("Aadhaar")
   const [loading, setLoading] = useState<boolean>(false)
@@ -81,6 +121,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
 
   const handlePrevious = () => {
     setDirection(-1);
+    console.log(direction)
     setCurrentIndex((val) => val === 0 ? images.length - 1 : val - 1)
   };
 
@@ -146,20 +187,35 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
       setLoading(false)
     }
   }, [])
-
-
-  const handleClear = (status: string) => {
+  interface ImageStatus {
+    status : string,
+    reason : string,
+    key : string,
+  }
+  const handleClear = (status: string, imageStatus : ImageStatus[]) => {
     const formData = new FormData()
-    formData.append('user_json', JSON.stringify(editedValues))
+    formData.append('user_json', JSON.stringify(editedValues.user_json))
     formData.append("customer_guid", customer_guid)
     formData.append("gid", gid)
     formData.append("bank_code", bank_code)
     formData.append("aadhar_json", JSON.stringify(editedValues.aadhar_json))
     formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
     formData.append("status", status)
-    setIsReasonOpen(true)
-    try {
+    console.log('image status recvd as params : ' , imageStatus)
+    if(imageStatus?.length > 0) {
+      formData.append("aadhaar_status" , `${imageStatus[0].status == 'ok' ? 1 : 0}`)
+      formData.append("aadhaar_status_remarks" , `${imageStatus[0].reason}`)
+      formData.append("pan_status" , `${imageStatus[2].status == 'ok' ? 1 : 0}`)
+      formData.append("pan_status_remarks" , `${imageStatus[2].reason}`)
+      formData.append("sign_status" , `${imageStatus[3].status == 'ok' ? 1 : 0}`)
+      formData.append("sign_status_remarks" , `${imageStatus[3].reason}`)
+      formData.append("selfi_status" , `${imageStatus[4].status == 'ok' ? 1 : 0}`)
+      formData.append("selfie_status_remarks" , `${imageStatus[4].reason}`)
 
+    }
+    // console.log(imageStatus)
+   
+    try {
       fetch('https://sugee.io/KYCServiceAPI/kycapi/updateOCRData', {
         method: 'POST',
         body: formData
@@ -167,17 +223,15 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
         const data = await res.json()
         if (data.status == '1') {
           toast.success(data.message)
+          console.log('Api ka response on hold' , data)
           setEntries([])
         }
       })
-
     } catch (error) {
       toast.error(`${error}`)
     }
 
   }
-
-
   const handleSubmit = () => {
     const formData = new FormData()
     formData.append('bank_code', bank_code)
@@ -187,9 +241,9 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     formData.append('user_json', JSON.stringify(editedValues.user_json))
     formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
     formData.append("status", "1")
-    console.log('this is the aadhr_josn being submited : ', JSON.stringify(editedValues.aadhar_json), '\n', editedValues.aadhar_json)
-    console.log('this is the pan_josn being submited : ', JSON.stringify(editedValues.pan_josn), '\n', editedValues.pan_josn)
-    console.log('this is the user_josn being submited : ', JSON.stringify(editedValues.user_json), '\n', editedValues.user_json)
+    // console.log('this is the aadhr_josn being submited : ', JSON.stringify(editedValues.aadhar_json), '\n', editedValues.aadhar_json)
+    // console.log('this is the pan_josn being submited : ', JSON.stringify(editedValues.pan_josn), '\n', editedValues.pan_josn)
+    // console.log('this is the user_josn being submited : ', JSON.stringify(editedValues.user_json), '\n', editedValues.user_json)
 
     try {
       fetch('https://sugee.io/KYCServiceAPI/kycapi/updateOCRData', {
@@ -200,6 +254,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
         if (data.status == '1') {
           // DO something
           toast.success(data.message)
+          console.log('Data after submitting(from backend) : ', data.data)
           setEntries([])
         }
       })
@@ -282,7 +337,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                     ❮
                   </button>
 
-                  <div className="relative w-[400px] h-[250px] overflow-hidden rounded-lg shadow-md">
+                  {/* <div className="relative w-[400px] h-[250px] overflow-hidden rounded-lg shadow-md">
                     <AnimatePresence custom={direction}>
                       {images.length > 0 && images[currentIndex] && (
                         <motion.img
@@ -302,6 +357,99 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                       )}
 
                     </AnimatePresence>
+                  </div> */}
+                  <div className="relative w-[400px] h-[250px] overflow-hidden rounded-lg shadow-md">
+                    <AnimatePresence>
+                      {images.length > 0 && images[currentIndex] && (
+                        <motion.img
+                          key={currentIndex}
+                          src={images[currentIndex].src}
+                          variants={variants}
+
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{ duration: 0.5 }}
+                          className="absolute w-full h-full object-cover cursor-pointer"
+                          onClick={() => setEnlargedImage(currentIndex)}
+                        />
+                      )}
+                    </AnimatePresence>
+
+
+                    <div className="absolute bottom-2 left-2 bg-white/80 px-4 py-1 rounded shadow flex gap-4 z-10">
+                      <label className="flex items-center gap-1">
+                        <input
+                          type="checkbox"
+                          checked={imageStatuses[currentIndex]?.status === 'ok'}
+                          onChange={() => handleCheckboxChange('ok')}
+                        />
+                        OK
+                      </label>
+                      <label className="flex items-center gap-1">
+                        <input
+                          type="checkbox"
+                          checked={imageStatuses[currentIndex]?.status === 'not_ok'}
+                          onChange={() => handleCheckboxChange('not_ok')}
+                        />
+                        Not OK
+                      </label>
+                    </div>
+
+
+                    {showReasonPopup && (
+                      <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-[100]">
+                        <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+                          <h2 className="text-lg font-semibold mb-2">Please select a reason</h2>
+
+                          <select
+                            className="w-full p-2 border rounded"
+                            value={imageStatuses[currentIndex].reason}
+                            onChange={(e) =>
+                              setImageStatuses((prev) => {
+                                const newStatuses = [...prev];
+                                newStatuses[currentIndex].reason = e.target.value;
+                                console.log(imageStatuses)
+                                return newStatuses;
+                              })
+                            }
+                          >
+                            <option value="">Select a reason</option>
+                            {
+                              remarks.map(remark => {
+                                return <option
+                                  value={remark.remarks}
+                                  key={remark.category}
+                                >{remark.remarks}</option>
+                              })
+                            }
+                            {/* <option value="Blurry image">Blurry image</option>
+                            <option value="Wrong angle">Wrong angle</option>
+                            <option value="Incomplete object">Incomplete object</option>
+                            <option value="Poor lighting">Poor lighting</option>
+                            <option value="Other">Other</option> */}
+                          </select>
+
+                          <div className="flex justify-end gap-2 mt-4">
+                            <button
+                              onClick={() => setShowReasonPopup(false)}
+                              className="px-4 py-2 bg-gray-300 rounded"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleReasonSubmit(imageStatuses[currentIndex].reason)
+                              }
+                              className="px-4 py-2 bg-blue-500 text-white rounded"
+                            >
+                              Submit
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                   </div>
 
                   <button
@@ -861,38 +1009,42 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                               );
                             })}
                           </div>
-
-
-
                         </>
                       )
                     }
                   </div>
                 </div>
-
                 <div className="flex justify-end space-x-3 pt-4">
-                  {/* <button
+                  <button
                     type="button"
-                    onClick={() => handleClear("-3")}
+                    onClick={() => handleClear("-3" , imageStatuses)}
                     className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-700 transition-colors"
                   >
-                    Clear
-                  </button> */}
+                    Reject
+                  </button>
 
                   <button
                     type="button"
-                    disabled={isReasonOpen ? true : false}
-                    onClick={() => handleClear("-2")}
+                    onClick={() => handleClear("-2" ,imageStatuses)}
                     className="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 transition-colors"
                   >
-                    Mark as Pending
+                    Hold
                   </button>
-                  <button
+                  {/* <button
                     type="submit"
+                    disabled={imageStatuses.find(obj => obj.status=="not_ok") ? true : false}
                     onClick={handleSubmit}
                     className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
                   >
                     Submit
+                  </button> */}
+                  <button
+                    type="submit"
+                    disabled={imageStatuses.some(obj => obj.status === 'not_ok')}
+                    onClick={handleSubmit}
+                    className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Approve
                   </button>
                 </div>
               </div>
