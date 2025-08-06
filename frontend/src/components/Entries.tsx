@@ -206,6 +206,8 @@ const Entries = () => {
                 updateForm.append('bank_code', bankCode);
                 updateForm.append('customer_guid', data.data[0].customer_guid);
                 updateForm.append('gid', data.data[0].gid);
+                updateForm.append("aadhar_json" , "")
+                console.log(updateForm)
                 const token = localStorage.getItem('authtoken'); // this could return null or a string
 
                 const headers: HeadersInit = {
