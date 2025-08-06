@@ -282,8 +282,8 @@ const Entries = () => {
         <>
             {/* Always-visible Bank & Branch selectors */}
             <div className="w-[95%] max-w-5xl mx-auto rounded-lg p-6 bg-gray-100 shadow-md">
-                <div className="w-full overflow-x-auto lg:overflow-visible hide-scrollbar">
-                    <form onSubmit={handleSubmit} className="min-w-[700px] flex items-center gap-4 px-2">
+                <div className="w-full  flex items-center justify-center lg:block overflow-x-auto lg:overflow-visible hide-scrollbar">
+                    <form onSubmit={handleSubmit} className="lg:min-w-[700px] m-auto lg:m-0 flex flex-col lg:flex-row items-baseline lg:items-center gap-4 px-2">
                         {/* Bank Selector */}
                         <div className="flex flex-col">
                             <label htmlFor="bank-select" className="text-xs font-medium text-gray-600 mb-1">
@@ -291,7 +291,7 @@ const Entries = () => {
                             </label>
                             <select
                                 id="bank-select"
-                                className="min-w-[180px] h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                className="w-[180px] lg:min-w-[180px] h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                                 value={selectedBank}
                                 onChange={(e) => {
                                     const bank = e.target.value;
@@ -315,7 +315,7 @@ const Entries = () => {
                             </label>
                             <select
                                 id="branch-select"
-                                className="min-w-[180px] h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                className="w-[180px] lg:min-w-[180px] h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                                 value={selectedBranch}
                                 onChange={(e) => { setSelectedBranch(e.target.value); setIsBranchChange(true); sessionStorage.setItem('isCahnge', 'true'); }}
                             >
@@ -329,10 +329,10 @@ const Entries = () => {
                         </div>
 
                         {/* Submit Button */}
-                        <div className="flex items-end pt-5">
+                        <div className="flex items-end pt-5 w-[180px] lg:w-auto">
                             <button
                                 type="submit"
-                                className="h-10 px-6 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-all"
+                                className="w-full h-10 px-6 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-all"
                             >
                                 Get Entries
                             </button>
