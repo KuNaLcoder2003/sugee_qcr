@@ -58,8 +58,14 @@ const Pending = () => {
 
   const loadBranches = async () => {
     setLoadingBanks(true);
+         const token = localStorage.getItem('authtoken'); // this could return null or a string
+
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': token })
+      };
     try {
-      const res = await fetch(FETCH_BANKS_URL, { method: 'POST' });
+      const res = await fetch(FETCH_BANKS_URL, { method: 'POST',headers });
       const data = await res.json();
       if (data.data) {
         setBranches(data.data);
@@ -83,9 +89,14 @@ const Pending = () => {
       // const today = new Date();
       // const formattedDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
       // formData.append("fromDate", formattedDate);
+           const token = localStorage.getItem('authtoken'); // this could return null or a string
 
+      const headers: HeadersInit = {
+        ...(token && { 'Authorization': token })
+      };
       const res = await fetch(FETCH_OCR_KYC_ENTRIES_URL, {
         method: 'POST',
+        headers,
         body: formData
       });
       const data = await res.json();

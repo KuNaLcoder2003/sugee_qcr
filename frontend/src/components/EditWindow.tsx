@@ -128,9 +128,16 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     // formData.append("aadhar_json", editedValues.aadhar_no)
     // formData.append("pan_json", editedValues.pan_no)
     formData.append("status", status)
+     const token = localStorage.getItem('authtoken'); // this could return null or a string
+
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': token })
+      };
     try {
       fetch(EDIT_OCR_DATA_URL, {
         method: 'POST',
+        headers,
         body: formData
       }).then(async (res: Response) => {
         const data = await res.json()
@@ -156,10 +163,16 @@ const EditWindow: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     formData.append('user_json', JSON.stringify(editedValues.user_json))
     formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
     formData.append("status", "1")
+     const token = localStorage.getItem('authtoken'); // this could return null or a string
 
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': token })
+      };
     try {
       fetch(EDIT_OCR_DATA_URL, {
         method: 'POST',
+        headers,
         body: formData
       }).then(async (res: Response) => {
         const data = await res.json()

@@ -99,8 +99,14 @@ const Entries = () => {
 
     const loadBanks = async () => {
         setLoadingBanks(true);
+           const token = localStorage.getItem('authtoken'); // this could return null or a string
+
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': token })
+      };
         try {
-            const res = await fetch(FETCH_BANKS_URL, { method: 'POST' });
+            const res = await fetch(FETCH_BANKS_URL, { method: 'POST',headers });
             const data = await res.json();
             if (data.data) {
                 setBanks(data.data);
@@ -119,11 +125,16 @@ const Entries = () => {
         const form = new FormData();
         form.append('bank_code', bankCode);
         form.append('branch_code', branchCode);
-        console.log('Calling Customers')
         setLoadingCustomers(true);
+        const token = localStorage.getItem('authtoken'); // this could return null or a string
+
+      const headers: HeadersInit = {
+        ...(token && { Authorization: token })
+      };
         try {
             const res = await fetch(FETCH_BRANCH_CUSTOMERS, {
                 method: 'POST',
+                headers,
                 body: form,
             });
             const data = await res.json();
@@ -143,9 +154,15 @@ const Entries = () => {
     const fetchBankBranches = async (bankCode: string) => {
         const formData = new FormData();
         formData.append('bank_code', bankCode);
+         const token = localStorage.getItem('authtoken'); // this could return null or a string
+
+      const headers: HeadersInit = {
+        ...(token && { 'Authorization': token })
+      };
         try {
             const res = await fetch(`${FETCH_BRANCHES}?bank_code=${bankCode}`, {
                 method: 'POST',
+                headers,
                 body: formData,
             });
             const data = await res.json();
@@ -168,10 +185,15 @@ const Entries = () => {
             formData.append('limit', '1');
             console.log('Fetching entries for bank:', bankCode, 'branch:', branchCode);
             formData.append('branch_code', branchCode); 
+             const token = localStorage.getItem('authtoken'); // this could return null or a string
 
+      const headers: HeadersInit = {
+        ...(token && { 'Authorization': token })
+      };
 
             const res = await fetch(FETCH_OCR_KYC_ENTRIES_URL, {
                 method: 'POST',
+                headers,
                 body: formData,
             });
             const data = await res.json();
@@ -184,9 +206,14 @@ const Entries = () => {
                 updateForm.append('bank_code', bankCode);
                 updateForm.append('customer_guid', data.data[0].customer_guid);
                 updateForm.append('gid', data.data[0].gid);
+                const token = localStorage.getItem('authtoken'); // this could return null or a string
 
+                const headers: HeadersInit = {
+                    ...(token && { 'Authorization': token })
+                };
                 await fetch(EDIT_OCR_DATA_URL, {
                     method: 'POST',
+                    headers,
                     body: updateForm,
                 });
 
