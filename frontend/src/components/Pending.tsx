@@ -159,7 +159,7 @@ const Pending = () => {
                 <option value="">Select a Value</option>
                 {branches.map((branch) => (
                   <option key={branch.bank_code} value={branch.bank_code}>
-                    {branch.bank_code}
+                    {branch.bank_name}
                   </option>
                 ))}
               </select>
