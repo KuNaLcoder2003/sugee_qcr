@@ -923,7 +923,8 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                             ].map((field, index) => {
                               // Extract parts from editedValues.pan_josn.dob
                               const dobParts = editedValues.pan_josn.dob?.split("-") || ["", "", ""];
-                              const [month, day, year] = dobParts;
+                              console.log('date on pan : ' ,editedValues.pan_josn.dob )
+                              const [year, month, day] = dobParts;
 
                               // Generate options
                               const currentYear = new Date().getFullYear();
