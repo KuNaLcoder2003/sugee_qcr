@@ -34,7 +34,7 @@ const LOGIN_URL = `${import.meta.env.VITE_LOGIN_URL}`
 
 export const AuthProvider = ({ children }: Props) => {
     const [user_name, setUserName] = useState<string>("")
-    const [isAdmin, setIsAdmin] = useState<boolean>(false)
+    const [isAdmin, setIsAdmin] = useState<boolean>(localStorage.getItem('role') as string == '1' ? true : false)
     const [loggedIn, setIsLoggedIn] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const navigate = useNavigate()
