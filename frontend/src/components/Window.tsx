@@ -232,7 +232,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     }
 
   }
-  const handleSubmit = () => {
+  const handleSubmit = ( imageStatus : ImageStatus[]) => {
     const formData = new FormData()
     formData.append('bank_code', bank_code)
     formData.append("customer_guid", customer_guid)
@@ -241,6 +241,12 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     formData.append('user_json', JSON.stringify(editedValues.user_json))
     formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
     formData.append("status", "1")
+    if(imageStatus?.length > 0) {
+      formData.append("aadhaar_status" , `${imageStatus[0].status == 'ok' ? 1 : 0}`)
+      formData.append("pan_status" , `${imageStatus[2].status == 'ok' ? 1 : 0}`)
+      formData.append("sign_status" , `${imageStatus[3].status == 'ok' ? 1 : 0}`)
+      formData.append("selfi_status" , `${imageStatus[4].status == 'ok' ? 1 : 0}`)
+    }
     // console.log('this is the aadhr_josn being submited : ', JSON.stringify(editedValues.aadhar_json), '\n', editedValues.aadhar_json)
     // console.log('this is the pan_josn being submited : ', JSON.stringify(editedValues.pan_josn), '\n', editedValues.pan_josn)
     // console.log('this is the user_josn being submited : ', JSON.stringify(editedValues.user_json), '\n', editedValues.user_json)
@@ -1041,7 +1047,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                   <button
                     type="submit"
                     disabled={imageStatuses.some(obj => obj.status === 'not_ok')}
-                    onClick={handleSubmit}
+                    onClick={()=>handleSubmit(imageStatuses)}
                     className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Approve
