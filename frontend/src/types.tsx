@@ -12,9 +12,20 @@ export interface User {
   cif_number: string;
 }
 export interface USER_AADHAAR_PAN {
-  user_json : User,
-  aadhar_json : Aadhaar,
-  pan_josn : Pan
+  user_json: User,
+  aadhar_json: Aadhaar,
+  pan_josn: Pan
+}
+
+export interface Member {
+  user_id: string,
+  user_name: string,
+  name: string,
+  email: string,
+  mobile: string,
+  active: string,
+  role: string,
+  bank_code: string
 }
 
 export interface Customer {
@@ -48,17 +59,17 @@ export interface KYCEntries {
   sign_path: string;
   status: string;
   user_json: User,
-  pan_josn : Pan,
+  pan_josn: Pan,
 }
 export interface Aadhaar {
   aadhar_number: string,
-  dob : string,
+  dob: string,
   name: string,
-  address : string,
-  person_name? : string,
-  relation? : string,
-  relation_name? : string,
-  gender : string
+  address: string,
+  person_name?: string,
+  relation?: string,
+  relation_name?: string,
+  gender: string
 
 }
 export interface Edit {
@@ -73,17 +84,17 @@ export interface Edit {
   branch_code?: string,
   cif_number: string,
   sign_url: string,
-  aadhar_json : Aadhaar,
-  pan_josn : Pan
+  aadhar_json: Aadhaar,
+  pan_josn: Pan
   created_on: string,
   status: string,
   user_json: User
 }
 export interface Pan {
-  pan_number : string,
-  father_name : string,
-  dob : string,
-  name : string
+  pan_number: string,
+  father_name: string,
+  dob: string,
+  name: string
 }
 export interface Branch {
   bank_code: string;
@@ -106,7 +117,7 @@ export interface Entry {
   created_on: string,
   user_json: User
   status: string,
-  pan_josn : Pan,
+  pan_josn: Pan,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   setEntryToEdit: React.Dispatch<React.SetStateAction<EntryEdit>>
 }
@@ -124,7 +135,7 @@ export interface EntryEdit {
   cif_number: string,
   sign_url: string,
   aadhar_json: Aadhaar,
-  pan_josn : Pan
+  pan_josn: Pan
   created_on: string,
   status: string,
   user_json: User
