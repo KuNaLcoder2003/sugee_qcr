@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { type Member } from '../types';
 import Loader from './Loader';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import SearchBarDropdown from './AdminUserSearch';
 import { Plus } from 'lucide-react';
 import AddUserModal from './AddUserModal';
@@ -113,6 +113,7 @@ const UserManagement: React.FC = () => {
         <Loader />
       ) : (
         <div className="max-h-screen overflow-x-hidden px-4 py-6">
+          <Toaster/>
           <div className='p-2 mb-4 flex items-center justify-between'>
             <div className='w-full'>
               <SearchBarDropdown items={members} setSearchValue={setSearchValue} />

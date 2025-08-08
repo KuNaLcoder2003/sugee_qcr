@@ -1,6 +1,6 @@
 import { Loader, X } from 'lucide-react'
 import React, { useState, type FormEvent } from 'react'
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 const ADD_USER = `${import.meta.env.VITE_ADMIN_ADD_USER}`
 
@@ -67,6 +67,7 @@ const AddUserModal: React.FC<Props> = ({ setIsModalOpen, bank_code }) => {
     }
     return (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
+            <Toaster/>
             <div className="w-full max-w-md md:max-w-xl bg-white rounded-lg p-6">
                 <div className="w-full flex items-center justify-between mb-4">
                     <h2 className="text-lg md:text-xl font-semibold text-gray-700">Add a new user</h2>

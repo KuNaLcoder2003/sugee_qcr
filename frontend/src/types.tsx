@@ -70,7 +70,6 @@ export interface Aadhaar {
   relation?: string,
   relation_name?: string,
   gender: string
-
 }
 export interface Edit {
   gid: string,
