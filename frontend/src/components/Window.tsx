@@ -621,41 +621,8 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                             }
                           </div>
 
-                          {/* <div className='w-full flex items-center gap-2'>
-                            {
-                              [
-                                { label: "Gender", placeholder: "Enter user's gender", value: editedValues.aadhar_json.gender, name: "gender" },
-                                { label: "DOB", placeholder: "Enter user's dob", value: editedValues.aadhar_json.dob, name: "dob" }
-                              ].map((field, index) => {
-                                return (
-                                  <div key={`${index}_${field.name}`} className='flex flex-col'>
-                                    <label className="block text-sm font-medium text-gray-700">{field.label}</label>
-                                    <input
-                                      required
-                                      type="text"
-                                      placeholder={field.placeholder}
-                                      value={field.value}
-                                      onChange={(e) =>
-                                        setEditedValues({
-                                          ...editedValues,
-                                          user_json: {
-                                            ...editedValues.user_json,
-                                            [field.name]: e.target.value
-                                          },
-                                          aadhar_json: {
-                                            ...editedValues.aadhar_json,
-                                            [field.name]: e.target.value,
-                                          }
-                                        })
-                                      }
-                                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                    />
-                                  </div>
-                                )
-                              })
-                            }
-                          </div> */}
-                          <div className='w-full flex items-center gap-6'>
+                         
+                          <div className='w-full flex flex-wrap items-center gap-6'>
                             {
                               [
                                 {
@@ -914,6 +881,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                 })
                             }
                           </div>
+                          {/* <DobSelector editedValues={editedValues} setEditedValues={setEditedValues} /> */}
                           <div className="w-full flex items-center gap-2">
                             {[
                               {
@@ -939,7 +907,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                   day: part === "day" ? value : day
                                 };
 
-                                const formattedDob = `${updated.month}-${updated.day}-${updated.year}`;
+                                const formattedDob = `${updated.year}-${updated.month}-${updated.day}`;
 
                                 setEditedValues({
                                   ...editedValues,
@@ -958,7 +926,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                 <div key={`${index}_${field.name}`} className="flex flex-col w-full">
                                   <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                   <div className="flex gap-4 mt-1">
-                                    {/* Year */}
+                                    
                                     <div className="flex flex-col">
                                       <label className="text-xs text-gray-500 mb-1" htmlFor="dob-year">Year</label>
                                       <select
@@ -974,7 +942,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                       </select>
                                     </div>
 
-                                    {/* Month */}
+                                    
                                     <div className="flex flex-col">
                                       <label className="text-xs text-gray-500 mb-1" htmlFor="dob-month">Month</label>
                                       <select
@@ -990,7 +958,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                       </select>
                                     </div>
 
-                                    {/* Day */}
+                                    
                                     <div className="flex flex-col">
                                       <label className="text-xs text-gray-500 mb-1" htmlFor="dob-day">Day</label>
                                       <select
