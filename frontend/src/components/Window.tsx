@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Loader } from 'lucide-react';
+import { ChevronDown, ChevronUp, Loader, X } from 'lucide-react';
 import type React from 'react';
 import { useEffect, useState, type FormEvent } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
@@ -46,6 +46,10 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
   );
   const [showReasonPopup, setShowReasonPopup] = useState(false);
   const [remarks, setRemarks] = useState<any[]>([])
+  const [rejectStatusRemarks, setRejectStatusRemarks] = useState<string>("")
+  const [pendingStatusRemarks, setPendingStatusRemarks] = useState<string>("")
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState<boolean>(false)
+  const [isPendingModalOpen, setIsPendingModalOpen] = useState<boolean>(false)
   const handleCheckboxChange = (status: string) => {
     const updatedStatuses = [...imageStatuses];
     updatedStatuses[currentIndex].status = status;
@@ -196,7 +200,13 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     reason: string,
     key: string,
   }
-  const handleClear = (status: string, imageStatus: ImageStatus[]) => {
+  const handleClear = (status: string, imageStatus: ImageStatus[], status_remarks: string) => {
+
+    if (status_remarks.length == 0) {
+      toast.error('Enter reason')
+      return
+    }
+
     const formData = new FormData()
     formData.append('user_json', JSON.stringify(editedValues.user_json))
     formData.append("customer_guid", customer_guid)
@@ -401,7 +411,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                           onClick={() => setEnlargedImage(currentIndex)}
                           onLoad={(e) => {
                             const img = e.target as HTMLImageElement;
-                            
+
                             setAspectRatio(img.naturalWidth / img.naturalHeight);
                           }}
                         />
@@ -1045,10 +1055,54 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                     }
                   </div>
                 </div>
+                {
+                  isRejectModalOpen ?
+                    <div className='fixed bg-black/20 inset-0 p-2 z-50'>
+                      <div className='w-full h-full flex items-center justify-center'>
+                        <div className='p-2 bg-white w-xl flex flex-col items-baseline gap-4'>
+                          <div className='flex items-center justify-between w-full'>
+                            <h1 className='text-2xl font-bold'>Reject Reason </h1>
+                            <div className='flex items-center justify-center'>
+                              <X className='cursor-pointer' onClick={() => setIsRejectModalOpen(false)} />
+                            </div>
+                          </div>
+                          <textarea placeholder='Enter reason to reject the entry...' required={true} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" rows={4} value={rejectStatusRemarks} onChange={(e) => setRejectStatusRemarks(e.target.value)} />
+                          <button onClick={() => {
+                            handleClear("-3", imageStatuses, rejectStatusRemarks)
+                            setIsRejectModalOpen(false)
+                          }} className='p-1 px-2 rounded-lg cursor-pointer text-center bg-blue-600 text-white font-bold'>
+                            Submit
+                          </button>
+                        </div>
+                      </div>
+                    </div> : null
+                }
+                {
+                  isPendingModalOpen ?
+                    <div className='fixed bg-black/20 inset-0 p-2 z-50'>
+                      <div className='w-full h-full flex items-center justify-center'>
+                        <div className='p-2 bg-white w-xl flex flex-col items-baseline gap-4'>
+                          <div className='flex items-center justify-between w-full'>
+                            <h1 className='text-2xl font-bold'>Pending Reason </h1>
+                            <div className='flex items-center justify-center'>
+                              <X className='cursor-pointer' onClick={() => setIsPendingModalOpen(false)} />
+                            </div>
+                          </div>
+                          <textarea placeholder='Enter reason to put the entry in pending...' required={true} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" value={pendingStatusRemarks} onChange={(e) => setPendingStatusRemarks(e.target.value)} />
+                          <button onClick={() => {
+                            handleClear("-2", imageStatuses, pendingStatusRemarks)
+                            setIsPendingModalOpen(false)
+                          }} className='p-1 px-2 cursor-pointer rounded-lg text-center bg-blue-600 text-white font-bold'>
+                            Submit
+                          </button>
+                        </div>
+                      </div>
+                    </div> : null
+                }
                 <div className="flex justify-end space-x-3 pt-4">
                   <button
                     type="button"
-                    onClick={() => handleClear("-3", imageStatuses)}
+                    onClick={() => setIsRejectModalOpen(true)}
                     className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-700 transition-colors"
                   >
                     Reject
@@ -1056,7 +1110,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
 
                   <button
                     type="button"
-                    onClick={() => handleClear("-2", imageStatuses)}
+                    onClick={() => setIsPendingModalOpen(true)}
                     className="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 transition-colors"
                   >
                     Hold
