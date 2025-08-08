@@ -1,6 +1,6 @@
 import { ChevronDown, ChevronUp, Loader } from 'lucide-react';
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import type { Aadhaar, Pan, User, USER_AADHAAR_PAN } from '../types'
 import { AnimatePresence, motion } from 'framer-motion';
@@ -232,7 +232,8 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     }
 
   }
-  const handleSubmit = ( imageStatus : ImageStatus[]) => {
+  const handleSubmit = ( e :FormEvent ,imageStatus : ImageStatus[]) => {
+    e.preventDefault()
     const formData = new FormData()
     formData.append('bank_code', bank_code)
     formData.append("customer_guid", customer_guid)
@@ -472,7 +473,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
               </div>
 
               {/* Form Inputs */}
-              <div className="w-full m-auto lg:w-1/2 space-y-6">
+              <form onSubmit={(e)=>handleSubmit(e , imageStatuses)} className="w-full m-auto lg:w-1/2 space-y-6">
                 <div className="flex flex-col gap-4 items-baseline">
                   {/* Aadhaar box */}
 
@@ -1016,13 +1017,12 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                   <button
                     type="submit"
                     disabled={imageStatuses.some(obj => obj.status === 'not_ok')}
-                    onClick={()=>handleSubmit(imageStatuses)}
                     className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Approve
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         )
