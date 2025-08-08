@@ -39,6 +39,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
   bank_code, aadhar_page1_url, aadhar_page2_url, selie_url, sign_url, user_json, aadhar_json, pan_josn, cif_number, account_number, setEntries }) => {
 
   const [images, setImages] = useState<image[]>([])
+  const [aspectRatio, setAspectRatio] = useState(16 / 9);
   const [isForm60, setIsForm60] = useState<boolean>(pan_josn.form_60 == '1' ? true : false)
   const [imageStatuses, setImageStatuses] = useState<ImageStatus[]>(
     images.map(() => ({ status: '', reason: '', key: '' }))
@@ -368,20 +369,41 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
 
                     </AnimatePresence>
                   </div> */}
-                  <div className="relative w-[400px] h-[250px] overflow-hidden rounded-lg shadow-md">
-                    <AnimatePresence>
+                  <div className="relative w-[400px] h-[250px] overflow-hidden rounded-lg shadow-md"
+                    style={{ height: `${400 / aspectRatio}px` }}
+                  >
+                    {/* <AnimatePresence>
                       {images.length > 0 && images[currentIndex] && (
                         <motion.img
                           key={currentIndex}
                           src={images[currentIndex].src}
                           variants={variants}
-
                           initial="enter"
                           animate="center"
                           exit="exit"
                           transition={{ duration: 0.5 }}
                           className="absolute w-full h-full object-cover cursor-pointer"
                           onClick={() => setEnlargedImage(currentIndex)}
+                        />
+                      )}
+                    </AnimatePresence> */}
+                    <AnimatePresence>
+                      {images.length > 0 && images[currentIndex] && (
+                        <motion.img
+                          key={currentIndex}
+                          src={images[currentIndex].src}
+                          variants={variants}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{ duration: 0.5 }}
+                          className="absolute w-full h-full object-cover cursor-pointer"
+                          onClick={() => setEnlargedImage(currentIndex)}
+                          onLoad={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            
+                            setAspectRatio(img.naturalWidth / img.naturalHeight);
+                          }}
                         />
                       )}
                     </AnimatePresence>
@@ -804,7 +826,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                               checked={isForm60 ? true : false}
                               onChange={() => {
                                 setIsForm60(!isForm60)
-                                
+
                                 setEditedValues({
                                   ...editedValues,
                                   pan_josn: {
@@ -812,7 +834,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     form_60: isForm60 ? '1' : '0'
                                   }
                                 })
-                                console.log('Check karne ke baad : ' , editedValues.pan_josn.form_60)
+                                console.log('Check karne ke baad : ', editedValues.pan_josn.form_60)
                               }}
                             />
                           </div>
