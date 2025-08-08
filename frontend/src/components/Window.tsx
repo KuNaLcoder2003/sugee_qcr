@@ -39,6 +39,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
   bank_code, aadhar_page1_url, aadhar_page2_url, selie_url, sign_url, user_json, aadhar_json, pan_josn, cif_number, account_number, setEntries }) => {
 
   const [images, setImages] = useState<image[]>([])
+  const [isForm60, setIsForm60] = useState<boolean>(pan_josn.form_60 == '1' ? true : false)
   const [imageStatuses, setImageStatuses] = useState<ImageStatus[]>(
     images.map(() => ({ status: '', reason: '', key: '' }))
   );
@@ -72,7 +73,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
   useEffect(() => {
     if (images.length > 0) {
       setImageStatuses(images.map((img) => ({ status: '', reason: '', key: img.name })));
-    } 
+    }
   }, [images])
 
   const handleReasonSubmit = (reason: any) => {
@@ -111,7 +112,8 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
       pan_number: pan_josn.pan_number,
       name: pan_josn.name,
       father_name: pan_josn.father_name,
-      dob: pan_josn.dob
+      dob: pan_josn.dob,
+      form_60: pan_josn.form_60 ? '1' : "0"
     }
   })
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -146,6 +148,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
   };
   useEffect(() => {
     setLoading(true)
+    console.log('Form 60 status : ', editedValues.pan_josn.form_60)
     try {
       setImages([{
         name: 'Aadhaar Card - 1',
@@ -188,11 +191,11 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     }
   }, [])
   interface ImageStatus {
-    status : string,
-    reason : string,
-    key : string,
+    status: string,
+    reason: string,
+    key: string,
   }
-  const handleClear = (status: string, imageStatus : ImageStatus[]) => {
+  const handleClear = (status: string, imageStatus: ImageStatus[]) => {
     const formData = new FormData()
     formData.append('user_json', JSON.stringify(editedValues.user_json))
     formData.append("customer_guid", customer_guid)
@@ -201,20 +204,20 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     formData.append("aadhar_json", JSON.stringify(editedValues.aadhar_json))
     formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
     formData.append("status", status)
-    console.log('image status recvd as params : ' , imageStatus)
-    if(imageStatus?.length > 0) {
-      formData.append("aadhaar_status" , `${imageStatus[0].status == 'ok' ? 1 : 0}`)
-      formData.append("aadhaar_status_remarks" , `${imageStatus[0].reason}`)
-      formData.append("pan_status" , `${imageStatus[2].status == 'ok' ? 1 : 0}`)
-      formData.append("pan_status_remarks" , `${imageStatus[2].reason}`)
-      formData.append("sign_status" , `${imageStatus[3].status == 'ok' ? 1 : 0}`)
-      formData.append("sign_status_remarks" , `${imageStatus[3].reason}`)
-      formData.append("selfi_status" , `${imageStatus[4].status == 'ok' ? 1 : 0}`)
-      formData.append("selfie_status_remarks" , `${imageStatus[4].reason}`)
+    console.log('image status recvd as params : ', imageStatus)
+    if (imageStatus?.length > 0) {
+      formData.append("aadhaar_status", `${imageStatus[0].status == 'ok' ? 1 : 0}`)
+      formData.append("aadhaar_status_remarks", `${imageStatus[0].reason}`)
+      formData.append("pan_status", `${imageStatus[2].status == 'ok' ? 1 : 0}`)
+      formData.append("pan_status_remarks", `${imageStatus[2].reason}`)
+      formData.append("sign_status", `${imageStatus[3].status == 'ok' ? 1 : 0}`)
+      formData.append("sign_status_remarks", `${imageStatus[3].reason}`)
+      formData.append("selfi_status", `${imageStatus[4].status == 'ok' ? 1 : 0}`)
+      formData.append("selfie_status_remarks", `${imageStatus[4].reason}`)
 
     }
     // console.log(imageStatus)
-   
+
     try {
       fetch('https://sugee.io/KYCServiceAPI/kycapi/updateOCRData', {
         method: 'POST',
@@ -223,7 +226,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
         const data = await res.json()
         if (data.status == '1') {
           toast.success(data.message)
-          console.log('Api ka response on hold' , data)
+          console.log('Api ka response on hold', data)
           setEntries([])
         }
       })
@@ -232,7 +235,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     }
 
   }
-  const handleSubmit = ( e :FormEvent ,imageStatus : ImageStatus[]) => {
+  const handleSubmit = (e: FormEvent, imageStatus: ImageStatus[]) => {
     e.preventDefault()
     const formData = new FormData()
     formData.append('bank_code', bank_code)
@@ -242,11 +245,11 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     formData.append('user_json', JSON.stringify(editedValues.user_json))
     formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
     formData.append("status", "1")
-    if(imageStatus?.length > 0) {
-      formData.append("aadhaar_status" , `${imageStatus[0].status == 'ok' ? 1 : 0}`)
-      formData.append("pan_status" , `${imageStatus[2].status == 'ok' ? 1 : 0}`)
-      formData.append("sign_status" , `${imageStatus[3].status == 'ok' ? 1 : 0}`)
-      formData.append("selfi_status" , `${imageStatus[4].status == 'ok' ? 1 : 0}`)
+    if (imageStatus?.length > 0) {
+      formData.append("aadhaar_status", `${imageStatus[0].status == 'ok' ? 1 : 0}`)
+      formData.append("pan_status", `${imageStatus[2].status == 'ok' ? 1 : 0}`)
+      formData.append("sign_status", `${imageStatus[3].status == 'ok' ? 1 : 0}`)
+      formData.append("selfi_status", `${imageStatus[4].status == 'ok' ? 1 : 0}`)
     }
     // console.log('this is the aadhr_josn being submited : ', JSON.stringify(editedValues.aadhar_json), '\n', editedValues.aadhar_json)
     // console.log('this is the pan_josn being submited : ', JSON.stringify(editedValues.pan_josn), '\n', editedValues.pan_josn)
@@ -473,7 +476,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
               </div>
 
               {/* Form Inputs */}
-              <form onSubmit={(e)=>handleSubmit(e , imageStatuses)} className="w-full m-auto lg:w-1/2 space-y-6">
+              <form onSubmit={(e) => handleSubmit(e, imageStatuses)} className="w-full m-auto lg:w-1/2 space-y-6">
                 <div className="flex flex-col gap-4 items-baseline">
                   {/* Aadhaar box */}
 
@@ -628,7 +631,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                             }
                           </div>
 
-                         
+
                           <div className='w-full flex flex-wrap items-center gap-6'>
                             {
                               [
@@ -678,6 +681,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                         <div className="flex flex-col">
                                           <label htmlFor="dob-year" className="text-xs text-gray-500 mb-1">Year</label>
                                           <select
+                                            required
                                             id="dob-year"
                                             value={year}
                                             onChange={(e) => handleDobChange(e.target.value, "year")}
@@ -692,6 +696,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                         <div className="flex flex-col">
                                           <label htmlFor="dob-month" className="text-xs text-gray-500 mb-1">Month</label>
                                           <select
+                                            required
                                             id="dob-month"
                                             value={month}
                                             onChange={(e) => handleDobChange(e.target.value, "month")}
@@ -706,6 +711,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                         <div className="flex flex-col">
                                           <label htmlFor="dob-day" className="text-xs text-gray-500 mb-1">Day</label>
                                           <select
+                                            required
                                             id="dob-day"
                                             value={day}
                                             onChange={(e) => handleDobChange(e.target.value, "day")}
@@ -789,9 +795,32 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                   <div className='space-y-4 w-full mt-4 p-1 border border-gray-300 rounded-md shadow-sm'>
                     <div className='flex w-full items-center justify-between'>
                       <h3 className='text-xl font-bold'>Pan Details</h3>
-                      {
-                        (boxOpen == "Pan") ? <ChevronUp className='cursor-pointer' onClick={() => setBoxOpen("Aadhaar")} /> : <ChevronDown className='cursor-pointer' onClick={() => setBoxOpen("Pan")} />
-                      }
+                      <div className='flex items-center gap-4'>
+                        <div className='flex items-center gap-2'>
+                          <p className='text-md'>Form 60 </p>
+                          <div className='flex items-center justify-center'>
+                            <input
+                              type="checkbox"
+                              checked={isForm60 ? true : false}
+                              onChange={() => {
+                                setIsForm60(!isForm60)
+                                
+                                setEditedValues({
+                                  ...editedValues,
+                                  pan_josn: {
+                                    ...editedValues.pan_josn,
+                                    form_60: isForm60 ? '1' : '0'
+                                  }
+                                })
+                                console.log('Check karne ke baad : ' , editedValues.pan_josn.form_60)
+                              }}
+                            />
+                          </div>
+                        </div>
+                        {
+                          (boxOpen == "Pan") ? <ChevronUp className='cursor-pointer' onClick={() => setBoxOpen("Aadhaar")} /> : <ChevronDown className='cursor-pointer' onClick={() => setBoxOpen("Pan")} />
+                        }
+                      </div>
                     </div>
                     {
                       boxOpen == "Pan" && (
@@ -804,7 +833,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
                                       <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                       <input
-                                        required
+                                        required={isForm60 ? false : true}
                                         type="text"
                                         placeholder={field.placeholder}
                                         value={field.value}
@@ -836,7 +865,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
                                       <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                       <input
-                                        required
+                                        required={isForm60 ? false : true}
                                         type="text"
                                         placeholder={field.placeholder}
                                         value={field.value}
@@ -864,7 +893,8 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                     <div key={`${index}_${field.name}`} className='flex flex-col w-full'>
                                       <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                       <input
-                                        required
+
+                                        required={isForm60 ? false : true}
                                         type="text"
                                         placeholder={field.placeholder}
                                         value={field.value}
@@ -898,7 +928,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                             ].map((field, index) => {
                               // Extract parts from editedValues.pan_josn.dob
                               const dobParts = editedValues.pan_josn.dob?.split("-") || ["", "", ""];
-                              console.log('date on pan : ' ,editedValues.pan_josn.dob )
+                              console.log('date on pan : ', editedValues.pan_josn.dob)
                               const [year, month, day] = dobParts;
 
                               // Generate options
@@ -933,11 +963,12 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                 <div key={`${index}_${field.name}`} className="flex flex-col w-full">
                                   <label className="block text-sm font-medium text-gray-700">{field.label}</label>
                                   <div className="flex gap-4 mt-1">
-                                    
+
                                     <div className="flex flex-col">
                                       <label className="text-xs text-gray-500 mb-1" htmlFor="dob-year">Year</label>
                                       <select
                                         id="dob-year"
+                                        required={isForm60 ? false : true}
                                         value={year}
                                         onChange={(e) => handleDobChange(e.target.value, "year")}
                                         className="px-2 py-1 border border-gray-300 rounded-md"
@@ -949,10 +980,11 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                       </select>
                                     </div>
 
-                                    
+
                                     <div className="flex flex-col">
                                       <label className="text-xs text-gray-500 mb-1" htmlFor="dob-month">Month</label>
                                       <select
+                                        required={isForm60 ? false : true}
                                         id="dob-month"
                                         value={month}
                                         onChange={(e) => handleDobChange(e.target.value, "month")}
@@ -965,10 +997,11 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                                       </select>
                                     </div>
 
-                                    
+
                                     <div className="flex flex-col">
                                       <label className="text-xs text-gray-500 mb-1" htmlFor="dob-day">Day</label>
                                       <select
+                                        required={isForm60 ? false : true}
                                         id="dob-day"
                                         value={day}
                                         onChange={(e) => handleDobChange(e.target.value, "day")}
@@ -993,7 +1026,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                 <div className="flex justify-end space-x-3 pt-4">
                   <button
                     type="button"
-                    onClick={() => handleClear("-3" , imageStatuses)}
+                    onClick={() => handleClear("-3", imageStatuses)}
                     className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-700 transition-colors"
                   >
                     Reject
@@ -1001,7 +1034,7 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
 
                   <button
                     type="button"
-                    onClick={() => handleClear("-2" ,imageStatuses)}
+                    onClick={() => handleClear("-2", imageStatuses)}
                     className="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 transition-colors"
                   >
                     Hold

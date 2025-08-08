@@ -93,7 +93,8 @@ export interface Pan {
   pan_number: string,
   father_name: string,
   dob: string,
-  name: string
+  name: string,
+  form_60? : string
 }
 export interface Branch {
   bank_code: string;

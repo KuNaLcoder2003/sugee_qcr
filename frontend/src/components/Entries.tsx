@@ -44,6 +44,7 @@ const Entries = () => {
             father_name: '',
             dob: '',
             name: '',
+            form_60 : '',
         },
         created_on: '',
         status: '',
