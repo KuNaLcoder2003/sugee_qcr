@@ -215,7 +215,8 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
     formData.append("aadhar_json", JSON.stringify(editedValues.aadhar_json))
     formData.append("pan_json", JSON.stringify(editedValues.pan_josn))
     formData.append("status", status)
-    console.log('image status recvd as params : ', imageStatus)
+    formData.append("status_remarks" , status_remarks)
+    // console.log('image status recvd as params : ', imageStatus)
     if (imageStatus?.length > 0) {
       formData.append("aadhaar_status", `${imageStatus[0].status == 'ok' ? 1 : 0}`)
       formData.append("aadhaar_status_remarks", `${imageStatus[0].reason}`)
