@@ -398,26 +398,27 @@ const Window: React.FC<Props> = ({ gid, customer_guid, pan_page1_url,
                         />
                       )}
                     </AnimatePresence> */}
-                    <AnimatePresence>
-                      {images.length > 0 && images[currentIndex] && (
-                        <motion.img
-                          key={currentIndex}
-                          src={images[currentIndex].src}
-                          variants={variants}
-                          initial="enter"
-                          animate="center"
-                          exit="exit"
-                          transition={{ duration: 0.5 }}
-                          className="absolute w-full h-full object-cover cursor-pointer"
-                          onClick={() => setEnlargedImage(currentIndex)}
-                          onLoad={(e) => {
-                            const img = e.target as HTMLImageElement;
+                 <AnimatePresence>
+  {images.length > 0 && images[currentIndex] && (
+    <motion.img
+      key={currentIndex}
+      src={images[currentIndex].src}
+      variants={variants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{ duration: 0.5 }}
+      className="absolute w-[300px] h-[250px] object-contain rounded-lg bg-black cursor-pointer"
+      onClick={() => setEnlargedImage(currentIndex)}
+      onLoad={(e) => {
+        const img = e.target as HTMLImageElement;
+        setAspectRatio(img.naturalWidth / img.naturalHeight);
+      }}
+    />
+  )}
+</AnimatePresence>
 
-                            setAspectRatio(img.naturalWidth / img.naturalHeight);
-                          }}
-                        />
-                      )}
-                    </AnimatePresence>
+
 
 
                     <div className="absolute bottom-2 left-2 bg-white/80 px-4 py-1 rounded shadow flex gap-4 z-10">
