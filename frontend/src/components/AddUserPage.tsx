@@ -1,4 +1,4 @@
-import { Loader} from 'lucide-react'
+import { Loader } from 'lucide-react'
 import React, { useState, type FormEvent } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -58,11 +58,11 @@ const AddUserModal: React.FC = () => {
     }
     return (
         <div className="realtive bg-stone-300 w-screen h-screen overflow-hidden flex items-center justify-center px-4">
-            <Toaster/>
+            <Toaster />
             <div className="w-full max-w-md md:max-w-xl bg-white rounded-lg p-6">
                 <div className="w-full flex items-center justify-between mb-4">
                     <h2 className="text-lg md:text-xl font-semibold text-gray-700">Add a new user</h2>
-                   
+
                 </div>
                 {
                     loading ? <Loader /> : <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-6">
