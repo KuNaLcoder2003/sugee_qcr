@@ -12,7 +12,7 @@ function App() {
   return (
     <Routes>
       <Route path='/' element={loggedIn ? <DashBoard/> : <AuthPage/>} />
-      <Route path='/dashboard' element={<DashBoard/>} />
+      <Route path='/dashboard' element={loggedIn ? <DashBoard/> : <AuthPage/>} />
       <Route path='/addUser' element={<AddUserPage/>} />
     </Routes>
   )

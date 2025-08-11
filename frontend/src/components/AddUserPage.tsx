@@ -29,7 +29,7 @@ const AddUserModal: React.FC = () => {
             formData.append("Mobile", userDetails.mobile)
             formData.append("Password", userDetails.mobile)
             formData.append("role", "2")
-            formData.append("status", "1")
+            formData.append("status", "0")
             formData.append("bank_code", "162")
             setLoading(true)
             const response = await fetch(ADD_USER, {
