@@ -1,13 +1,17 @@
 import { Loader } from 'lucide-react'
-import React, { useState, type FormEvent } from 'react'
+import React, { useEffect, useState, type FormEvent } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
+import { type Branch } from '../types';
+
 
 const ADD_USER = `${import.meta.env.VITE_ADMIN_ADD_USER}`
+const FETCH_BANKS_URL = `${import.meta.env.VITE_FETCH_BANKS_URL}`;
 interface NewUser {
     name: string,
     email: string,
     mobile: string,
 }
+
 
 const AddUserModal: React.FC = () => {
     const [userDetails, setUserDetails] = useState<NewUser>({
@@ -17,20 +21,45 @@ const AddUserModal: React.FC = () => {
     });
 
     const [loading, setLoading] = useState<boolean>(false)
+    const [bankCode, setBankCode] = useState<string>("")
+    const [banks, setBanks] = useState<Branch[]>([])
 
+    useEffect(() => {
+        try {
+
+            fetch(FETCH_BANKS_URL, {
+                method: 'POST',
+            }).then(async (response: Response) => {
+                const data = await response.json()
+                if (data.status == '1') {
+                    setBanks(data.data)
+                } else {
+                    setBanks([])
+                    toast.error(data.message)
+                }
+            })
+        } catch (error) {
+            toast.error('Something went wrong')
+        }
+    }, [])
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault()
+        if (bankCode.length == 0) {
+            toast.error('Please select bank')
+            return
+        }
         console.log('Submitting')
         try {
             const formData = new FormData()
+            console.log('Bank code is : ', bankCode)
             formData.append("Name", userDetails.name)
             formData.append("email", "")
             formData.append("Mobile", userDetails.mobile)
             formData.append("Password", userDetails.mobile)
             formData.append("role", "2")
             formData.append("status", "0")
-            formData.append("bank_code", "162")
+            formData.append("bank_code", bankCode)
             setLoading(true)
             const response = await fetch(ADD_USER, {
                 method: 'POST',
@@ -67,6 +96,28 @@ const AddUserModal: React.FC = () => {
                 {
                     loading ? <Loader /> : <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-6">
                         <div className="flex flex-col gap-4">
+                            <div className="flex flex-col">
+                                <label htmlFor="bank-select" className="text-xs font-medium text-gray-600 mb-1">
+                                    Bank
+                                </label>
+                                <select
+                                    id="bank-select"
+                                    className="w-[180px] lg:min-w-[180px] h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    value={bankCode}
+                                    onChange={(e) => {
+                                        const bank = e.target.value;
+                                        setBankCode(bank);
+                                        // fetchBankBranches(bank);
+                                    }}
+                                >
+                                    <option value="">Choose Bank</option>
+                                    {banks.map((bank) => (
+                                        <option key={bank.bank_code} value={bank.bank_code}>
+                                            {bank.bank_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-sm md:text-base text-gray-600">Name:</label>
                                 <input
