@@ -133,7 +133,6 @@ const AddUserModal: React.FC = () => {
                             <div className="flex flex-col gap-1 w-full">
                                 <label className="text-sm md:text-base text-gray-600">Email:</label>
                                 <input
-                                    required={true}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="Enter user's email..."
                                     value={userDetails.email}
